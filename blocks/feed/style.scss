@@ -1,0 +1,57 @@
+/**
+ * Structural CSS only — deliberately unopinionated so theme styles win.
+ * Column count is a custom property themes can override:
+ *   .thewpfeeds__grid { --thewpfeeds-columns: 3; }
+ */
+
+.thewpfeeds__grid {
+	display: grid;
+	grid-template-columns: repeat( var( --thewpfeeds-columns, 2 ), 1fr );
+	gap: var( --thewpfeeds-gap, 1.5rem );
+
+	@media ( max-width: 640px ) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.thewpfeeds__list {
+	display: flex;
+	flex-direction: column;
+	gap: var( --thewpfeeds-gap, 1.5rem );
+
+	.thewpfeeds__item {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+	}
+
+	.thewpfeeds__item-media {
+		flex: 0 0 30%;
+	}
+}
+
+.thewpfeeds__item-image {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+/* Video cards (item-youtube.php): play affordance over the thumbnail. */
+.thewpfeeds__item-media--video {
+	position: relative;
+	display: block;
+}
+
+.thewpfeeds__item-play {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.9;
+	transition: opacity 0.15s ease;
+
+	.thewpfeeds__item-media--video:hover & {
+		opacity: 1;
+	}
+}

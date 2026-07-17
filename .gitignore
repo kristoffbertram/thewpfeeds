@@ -1,0 +1,11 @@
+/vendor/
+/node_modules/
+/build/
+/languages/*.mo
+.DS_Store
+.phpunit.result.cache
+.phpunit.cache/
+.phpcs-cache
+CLAUDE.md
+CREDENTIALS.md
+/dist/

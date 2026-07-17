@@ -1,0 +1,131 @@
+{
+    "_comment": "Shaped like a real GET https://api.linkedin.com/rest/posts?q=author response (LinkedIn-Version 202506). Image URNs resolve via the accompanying _images map, mirroring GET /rest/images?ids=List(...).",
+    "paging": {
+        "start": 0,
+        "count": 10,
+        "links": []
+    },
+    "elements": [
+        {
+            "id": "urn:li:share:7208881234567890001",
+            "author": "urn:li:organization:1441",
+            "commentary": "We’re thrilled to announce our new refrigerated transport line — built for the toughest cold chains in Europe. {hashtag|\\#|ColdChain} {hashtag|\\#|Sustainability}",
+            "createdAt": 1751364000000,
+            "publishedAt": 1751364000000,
+            "visibility": "PUBLIC",
+            "lifecycleState": "PUBLISHED",
+            "content": {
+                "media": {
+                    "id": "urn:li:image:D4D22AQFixture000001",
+                    "altText": "A refrigerated trailer on a mountain road at dawn"
+                }
+            },
+            "distribution": {
+                "feedDistribution": "MAIN_FEED"
+            }
+        },
+        {
+            "id": "urn:li:share:7208881234567890002",
+            "author": "urn:li:organization:1441",
+            "commentary": "Our CEO sat down with @[Transport Weekly](urn:li:organization:99001) to talk electrification, driver comfort, and what’s next for zero-emission logistics.",
+            "createdAt": 1750759200000,
+            "publishedAt": 1750762800000,
+            "visibility": "PUBLIC",
+            "lifecycleState": "PUBLISHED",
+            "content": {
+                "article": {
+                    "source": "https://example.com/interviews/zero-emission-logistics",
+                    "title": "The Road to Zero-Emission Logistics",
+                    "description": "An interview about electrification and the future of transport refrigeration.",
+                    "thumbnail": "urn:li:image:D4D22AQFixture000002"
+                }
+            },
+            "distribution": {
+                "feedDistribution": "MAIN_FEED"
+            }
+        },
+        {
+            "id": "urn:li:share:7208881234567890003",
+            "author": "urn:li:organization:1441",
+            "commentary": "Team spotlight \\(part 3\\): meet the engineers keeping fresh produce fresh across 12 countries. Their motto: \"cold is a craft\".",
+            "createdAt": 1750154400000,
+            "publishedAt": 1750154400000,
+            "visibility": "PUBLIC",
+            "lifecycleState": "PUBLISHED",
+            "content": {
+                "multiImage": {
+                    "images": [
+                        {
+                            "id": "urn:li:image:D4D22AQFixture000003",
+                            "altText": "Three engineers in front of a service bay"
+                        },
+                        {
+                            "id": "urn:li:image:D4D22AQFixture000004",
+                            "altText": "Diagnostic laptop connected to a trailer unit"
+                        }
+                    ]
+                }
+            },
+            "distribution": {
+                "feedDistribution": "MAIN_FEED"
+            }
+        },
+        {
+            "id": "urn:li:share:7208881234567890004",
+            "author": "urn:li:organization:1441",
+            "commentary": "Registration for our annual Dealer Summit is now open. Two days of product deep-dives, service training, and the 2027 roadmap. Seats are limited — link in the first comment.",
+            "createdAt": 1749549600000,
+            "publishedAt": 1749549600000,
+            "visibility": "PUBLIC",
+            "lifecycleState": "PUBLISHED",
+            "content": {},
+            "distribution": {
+                "feedDistribution": "MAIN_FEED"
+            }
+        },
+        {
+            "id": "urn:li:share:7208881234567890005",
+            "author": "urn:li:organization:1441",
+            "commentary": "Proud moment: our A-500e unit won the {hashtag|\\#|IAA2026} Innovation Award for electric transport refrigeration. Thank you to everyone who voted!",
+            "createdAt": 1748944800000,
+            "publishedAt": 1748944800000,
+            "visibility": "PUBLIC",
+            "lifecycleState": "PUBLISHED",
+            "content": {
+                "media": {
+                    "id": "urn:li:image:D4D22AQFixture000005",
+                    "altText": "Award trophy in front of an exhibition booth"
+                }
+            },
+            "distribution": {
+                "feedDistribution": "MAIN_FEED"
+            }
+        }
+    ],
+    "_images": {
+        "urn:li:image:D4D22AQFixture000001": {
+            "url": "https://picsum.photos/seed/thewpfeeds-1/1200/675",
+            "width": 1200,
+            "height": 675
+        },
+        "urn:li:image:D4D22AQFixture000002": {
+            "url": "https://picsum.photos/seed/thewpfeeds-2/1200/627",
+            "width": 1200,
+            "height": 627
+        },
+        "urn:li:image:D4D22AQFixture000003": {
+            "url": "https://picsum.photos/seed/thewpfeeds-3/1200/675",
+            "width": 1200,
+            "height": 675
+        },
+        "urn:li:image:D4D22AQFixture000005": {
+            "url": "https://picsum.photos/seed/thewpfeeds-5/1200/675",
+            "width": 1200,
+            "height": 675
+        }
+    },
+    "_organization": {
+        "name": "Acme Transport Refrigeration",
+        "url": "https://www.linkedin.com/company/acme-transport-refrigeration"
+    }
+}
