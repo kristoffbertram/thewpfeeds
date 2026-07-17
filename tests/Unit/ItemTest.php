@@ -85,6 +85,19 @@ final class ItemTest extends TestCase
         $this->assertSame('', $this->item()->imageTag());
     }
 
+    public function testImageTagDropsHostileAttributeNames(): void
+    {
+        Functions\when('esc_url')->returnArg();
+        Functions\when('esc_attr')->alias(static fn (string $v): string => htmlspecialchars($v, ENT_QUOTES));
+
+        $item = $this->item(['image' => new ItemImage('https://remote.example/img.jpg')]);
+
+        $tag = $item->imageTag(['x" onerror="alert(1)' => 'y', 'data-ok' => 'kept']);
+
+        $this->assertStringNotContainsString('onerror', $tag, 'Hostile attribute NAME must be dropped, not escaped');
+        $this->assertStringContainsString('data-ok="kept"', $tag);
+    }
+
     public function testToArrayFromArrayRoundTrip(): void
     {
         $original = $this->item([

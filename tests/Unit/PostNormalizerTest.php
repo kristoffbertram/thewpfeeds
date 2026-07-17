@@ -36,13 +36,13 @@ final class PostNormalizerTest extends TestCase
             $item->url
         );
         $this->assertNull($item->title, 'Plain posts have no title');
-        $this->assertStringContainsString('#ColdChain', $item->content);
-        $this->assertStringContainsString('#Sustainability', $item->content);
+        $this->assertStringContainsString('#SpecialtyCoffee', $item->content);
+        $this->assertStringContainsString('#Espresso', $item->content);
         $this->assertStringNotContainsString('{hashtag', $item->content);
         $this->assertSame(1751364000, $item->date->getTimestamp());
         $this->assertNotNull($item->image);
         $this->assertSame('https://picsum.photos/seed/thewpfeeds-1/1200/675', $item->image->remoteUrl);
-        $this->assertSame('A refrigerated trailer on a mountain road at dawn', $item->image->alt);
+        $this->assertSame('Bags of coffee on a roastery workbench at dawn', $item->image->alt);
         $this->assertSame(1200, $item->image->width);
         $this->assertSame($post, $item->raw, 'Raw payload preserved as escape hatch');
     }
@@ -52,8 +52,8 @@ final class PostNormalizerTest extends TestCase
         $post = $this->fixture['elements'][1];
         $item = $this->normalizer->normalize($post, $this->fixture['_images']);
 
-        $this->assertSame('The Road to Zero-Emission Logistics', $item->title);
-        $this->assertStringContainsString('Transport Weekly', $item->content);
+        $this->assertSame('The Road to Carbon-Neutral Roasting', $item->title);
+        $this->assertStringContainsString('Brew Weekly', $item->content);
         $this->assertStringNotContainsString('@[', $item->content, 'Mentions unwrapped to plain names');
         $this->assertNotNull($item->image);
         $this->assertSame('https://picsum.photos/seed/thewpfeeds-2/1200/627', $item->image->remoteUrl);
@@ -67,7 +67,7 @@ final class PostNormalizerTest extends TestCase
         $this->assertNotNull($item->image);
         $this->assertSame('https://picsum.photos/seed/thewpfeeds-3/1200/675', $item->image->remoteUrl);
         $this->assertStringContainsString('(part 3)', $item->content, 'Escaped parens unescaped');
-        $this->assertStringContainsString('"cold is a craft"', $item->content);
+        $this->assertStringContainsString('"roast is a craft"', $item->content);
     }
 
     public function testTextOnlyPostHasNoImageAndNoTitle(): void

@@ -30,7 +30,7 @@ final class BlueskyNormalizerTest extends TestCase
 
         foreach ($items as $item) {
             $this->assertSame('bluesky', $item->provider);
-            $this->assertSame('Acme Transport Refrigeration', $item->author()?->name);
+            $this->assertSame('Copperline Coffee Roasters', $item->author()?->name);
         }
     }
 
@@ -42,13 +42,13 @@ final class BlueskyNormalizerTest extends TestCase
             'https://bsky.app/profile/acme.example.com/post/3kfixture001',
             $first->url
         );
-        $this->assertStringContainsString('refrigerated transport line', $first->content);
+        $this->assertStringContainsString('single-origin espresso line', $first->content);
         $this->assertNull($first->title, 'Bluesky posts have no titles');
         $this->assertSame(
             'https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:acme123/bafyimg001@jpeg',
             $first->image?->remoteUrl
         );
-        $this->assertSame('A refrigerated trailer on a mountain road at dawn', $first->image?->alt);
+        $this->assertSame('Bags of coffee on a roastery workbench at dawn', $first->image?->alt);
         $this->assertSame(1200, $first->image?->width);
         $this->assertSame('2026-07-01', $first->datetime()->format('Y-m-d'));
     }

@@ -7,13 +7,13 @@
                 "author": {
                     "did": "did:plc:acme123",
                     "handle": "acme.example.com",
-                    "displayName": "Acme Transport Refrigeration",
+                    "displayName": "Copperline Coffee Roasters",
                     "avatar": "https://cdn.bsky.app/img/avatar/plain/did:plc:acme123/avatar@jpeg"
                 },
                 "record": {
                     "$type": "app.bsky.feed.post",
                     "createdAt": "2026-07-01T10:00:00.000Z",
-                    "text": "We're thrilled to announce our new refrigerated transport line — built for the toughest cold chains in Europe. 🧊🚛"
+                    "text": "We're thrilled to announce our new single-origin espresso line — small-batch roasted for cafés across Europe. ☕"
                 },
                 "embed": {
                     "$type": "app.bsky.embed.images#view",
@@ -21,7 +21,7 @@
                         {
                             "thumb": "https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:acme123/bafyimg001@jpeg",
                             "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:acme123/bafyimg001@jpeg",
-                            "alt": "A refrigerated trailer on a mountain road at dawn",
+                            "alt": "Bags of coffee on a roastery workbench at dawn",
                             "aspectRatio": { "width": 1200, "height": 675 }
                         }
                     ]
@@ -55,19 +55,19 @@
                 "author": {
                     "did": "did:plc:acme123",
                     "handle": "acme.example.com",
-                    "displayName": "Acme Transport Refrigeration"
+                    "displayName": "Copperline Coffee Roasters"
                 },
                 "record": {
                     "$type": "app.bsky.feed.post",
                     "createdAt": "2026-06-24T11:00:00.000Z",
-                    "text": "Our CEO on electrification, driver comfort, and what's next for zero-emission logistics — full interview linked."
+                    "text": "Our founder on sourcing, café culture, and what's next for carbon-neutral roasting — full interview linked."
                 },
                 "embed": {
                     "$type": "app.bsky.embed.external#view",
                     "external": {
-                        "uri": "https://example.com/interviews/zero-emission-logistics",
-                        "title": "The Road to Zero-Emission Logistics",
-                        "description": "An interview about electrification.",
+                        "uri": "https://example.com/interviews/carbon-neutral-roasting",
+                        "title": "The Road to Carbon-Neutral Roasting",
+                        "description": "An interview about sustainable roasting.",
                         "thumb": "https://cdn.bsky.app/img/feed_thumbnail/plain/did:plc:acme123/bafylink002@jpeg"
                     }
                 },
@@ -81,12 +81,12 @@
                 "author": {
                     "did": "did:plc:acme123",
                     "handle": "acme.example.com",
-                    "displayName": "Acme Transport Refrigeration"
+                    "displayName": "Copperline Coffee Roasters"
                 },
                 "record": {
                     "$type": "app.bsky.feed.post",
                     "createdAt": "2026-06-10T09:00:00.000Z",
-                    "text": "Registration for our annual Dealer Summit is open. Two days of product deep-dives and the 2027 roadmap."
+                    "text": "Registration for our annual Barista Summit is open. Two days of workshops and the 2027 lineup."
                 },
                 "indexedAt": "2026-06-10T09:00:03.000Z"
             }

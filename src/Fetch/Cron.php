@@ -76,8 +76,10 @@ final class Cron
         }
     }
 
+    /** Deactivation/uninstall: clear the sweep AND all one-off per-feed events. */
     public static function unschedule(): void
     {
-        wp_clear_scheduled_hook(self::HOOK_REFRESH_ALL);
+        wp_unschedule_hook(self::HOOK_REFRESH_ALL);
+        wp_unschedule_hook(self::HOOK_REFRESH_ONE);
     }
 }

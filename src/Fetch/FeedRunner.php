@@ -31,7 +31,11 @@ final class FeedRunner
      */
     public function run(Feed $feed, bool $force = false): ?ItemCollection
     {
-        if (!$force && !$this->lock->acquire($feed)) {
+        // Forced runs bypass the lock but must not release one they don't hold —
+        // that would defeat stampede protection for a concurrent normal fetch.
+        $acquired = !$force && $this->lock->acquire($feed);
+
+        if (!$force && !$acquired) {
             return null;
         }
 
@@ -62,7 +66,9 @@ final class FeedRunner
 
             return null;
         } finally {
-            $this->lock->release($feed);
+            if ($acquired) {
+                $this->lock->release($feed);
+            }
         }
     }
 }

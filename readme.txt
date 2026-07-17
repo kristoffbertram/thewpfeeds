@@ -25,7 +25,7 @@ Every provider — LinkedIn company pages, RSS/Atom, YouTube channels, Bluesky p
 
 **Performance & privacy by design**
 
-* Rendering never blocks on a remote API: items are cached server-side, stale content is served instantly while a background refresh runs.
+* Rendering never blocks on a remote API (the only exception is a brand-new feed's very first fetch): items are cached server-side, stale content is served instantly while a background refresh runs.
 * Feed images are stored locally in your uploads dir (LinkedIn image URLs expire by design — hotlinking them breaks).
 * Visitors' browsers never contact the source platforms. Content lives in your DOM: real SEO, no consent baggage.
 
@@ -72,7 +72,7 @@ Copy any template from the plugin's `templates/` folder into `{your-theme}/thewp
 
 = Does it slow my site down? =
 
-No. Feeds are fetched in the background and served from a local cache; pages never wait on a remote API. Images are served from your own uploads directory.
+No. Feeds are fetched in the background and served from a local cache; pages never wait on a remote API (except the one-time first fetch of a newly created feed). Images are served from your own uploads directory.
 
 == Changelog ==
 

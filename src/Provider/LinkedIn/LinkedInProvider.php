@@ -79,7 +79,7 @@ final class LinkedInProvider implements ProviderInterface
             'organization_id' => [
                 'label' => __('Organization ID', 'thewpfeeds'),
                 'type' => 'text',
-                'help' => __('The numeric ID of your company page (from its admin URL), e.g. 1441.', 'thewpfeeds'),
+                'help' => __('The numeric ID of your company page (from its admin URL), e.g. 2414183.', 'thewpfeeds'),
                 'required' => true,
             ],
             'organization_name' => [

@@ -51,8 +51,10 @@ rsync -a \
 (cd dist && zip -qr "$(basename "$ZIP")" thewpfeeds)
 
 # wp.org variant: strip the external update checker (guideline 8) — Plugin.php
-# guards the wiring with class_exists, so removal is safe.
+# guards the wiring with a file check, so removal is safe. Regenerate the
+# optimized classmap so no entry points at the stripped file.
 rm "$STAGE/src/License/UpdateChecker.php"
+(cd "$STAGE" && composer dump-autoload --no-dev --optimize --quiet)
 WPORG_ZIP="dist/thewpfeeds-${VERSION}-wporg.zip"
 (cd dist && zip -qr "$(basename "$WPORG_ZIP")" thewpfeeds)
 

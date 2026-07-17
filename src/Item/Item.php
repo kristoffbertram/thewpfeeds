@@ -98,6 +98,12 @@ final readonly class Item
 
         $html = '<img';
         foreach ($attributes as $name => $value) {
+            // Values are escaped below; NAMES must be validated — a hostile
+            // key like 'x" onerror="…' would otherwise break out of the tag.
+            if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_:.-]*$/', (string) $name)) {
+                continue;
+            }
+
             $html .= sprintf(
                 ' %s="%s"',
                 $name,

@@ -20,6 +20,12 @@ final class LinkedInOAuth
     private const SCOPES = 'r_organization_social rw_organization_admin';
     private const STATE_TRANSIENT = 'thewpfeeds_oauth_state';
 
+    /** Per-user key so two admins connecting concurrently don't clobber each other. */
+    private static function stateKey(): string
+    {
+        return self::STATE_TRANSIENT . '_' . get_current_user_id();
+    }
+
     public function __construct(private readonly ConnectionRepository $connections)
     {
     }
@@ -34,7 +40,7 @@ final class LinkedInOAuth
     {
         $state = wp_generate_password(24, false);
 
-        set_transient(self::STATE_TRANSIENT, [
+        set_transient(self::stateKey(), [
             'state' => $state,
             'connection_id' => $connection->id,
         ], 10 * MINUTE_IN_SECONDS);
@@ -55,8 +61,8 @@ final class LinkedInOAuth
      */
     public function handleCallback(string $code, string $state): LinkedInConnection
     {
-        $expected = get_transient(self::STATE_TRANSIENT);
-        delete_transient(self::STATE_TRANSIENT);
+        $expected = get_transient(self::stateKey());
+        delete_transient(self::stateKey());
 
         if (!is_array($expected) || !hash_equals((string) $expected['state'], $state)) {
             throw new RuntimeException(esc_html__('OAuth state mismatch — please retry the connection.', 'thewpfeeds'));

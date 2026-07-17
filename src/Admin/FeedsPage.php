@@ -105,8 +105,8 @@ final class FeedsPage
             slug: sanitize_title(wp_unslash($_POST['slug'] ?? '')),
             providerId: $providerId,
             settings: $settings,
-            count: max(1, (int) ($_POST['count'] ?? Feed::DEFAULT_COUNT)),
-            ttl: max(5 * MINUTE_IN_SECONDS, (int) ($_POST['ttl'] ?? Feed::DEFAULT_TTL)),
+            count: min(50, max(1, (int) ($_POST['count'] ?? Feed::DEFAULT_COUNT))),
+            ttl: min(WEEK_IN_SECONDS, max(5 * MINUTE_IN_SECONDS, (int) ($_POST['ttl'] ?? Feed::DEFAULT_TTL))),
             defaultLayout: sanitize_key(wp_unslash($_POST['layout'] ?? 'grid')),
         );
 

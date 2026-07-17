@@ -26,17 +26,17 @@ final class RssNormalizerTest extends TestCase
 
         $first = $items[0];
         $this->assertSame('rss', $first->provider);
-        $this->assertSame('Shipping the cold chain dashboard', $first->title);
-        $this->assertSame('https://blog.acme.example/cold-chain-dashboard', $first->url);
+        $this->assertSame('Shipping the roastery dashboard', $first->title);
+        $this->assertSame('https://blog.copperline.example/roastery-dashboard', $first->url);
         $this->assertSame('2026-07-01 08:00', $first->datetime()->format('Y-m-d H:i'));
         $this->assertStringContainsString('the full story', $first->content, 'content:encoded preferred over description');
         $this->assertStringNotContainsString('<strong>', $first->content, 'HTML stripped to plain text');
         $this->assertStringContainsString('—', $first->content, 'entities decoded');
-        $this->assertSame('https://blog.acme.example/img/dashboard.jpg', $first->image?->remoteUrl);
+        $this->assertSame('https://blog.copperline.example/img/dashboard.jpg', $first->image?->remoteUrl);
         $this->assertSame(1200, $first->image?->width);
-        $this->assertSame('Acme Engineering Blog', $first->author()?->name);
+        $this->assertSame('Copperline Engineering Blog', $first->author()?->name);
 
-        $this->assertSame('https://blog.acme.example/img/stampede.png', $items[1]->image?->remoteUrl, 'image enclosure used as fallback');
+        $this->assertSame('https://blog.copperline.example/img/stampede.png', $items[1]->image?->remoteUrl, 'image enclosure used as fallback');
         $this->assertNull($items[2]->image);
         $this->assertStringContainsString("that’s fine", $items[2]->content);
     }
@@ -52,7 +52,7 @@ final class RssNormalizerTest extends TestCase
 
         $video = $items[0];
         $this->assertSame('youtube', $video->provider);
-        $this->assertSame('A-500e walkaround: electric refrigeration in 4 minutes', $video->title);
+        $this->assertSame('R-200 walkaround: drum roasting in 4 minutes', $video->title);
         $this->assertSame('https://www.youtube.com/watch?v=dQw4w9WgXcA', $video->url);
         $this->assertSame(
             'https://i.ytimg.com/vi/dQw4w9WgXcA/hqdefault.jpg',
@@ -60,7 +60,7 @@ final class RssNormalizerTest extends TestCase
             'media:thumbnail wins; the x-shockwave-flash media:content is skipped'
         );
         $this->assertSame('2026-06-20', $video->datetime()->format('Y-m-d'), 'published preferred over updated');
-        $this->assertSame('Acme Transport Refrigeration', $video->author()?->name);
+        $this->assertSame('Copperline Coffee Roasters', $video->author()?->name);
     }
 
     public function testDistinctIdsAndStableHashing(): void

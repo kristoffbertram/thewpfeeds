@@ -8,8 +8,8 @@
     "elements": [
         {
             "id": "urn:li:share:7208881234567890001",
-            "author": "urn:li:organization:1441",
-            "commentary": "We’re thrilled to announce our new refrigerated transport line — built for the toughest cold chains in Europe. {hashtag|\\#|ColdChain} {hashtag|\\#|Sustainability}",
+            "author": "urn:li:organization:2414183",
+            "commentary": "We’re thrilled to announce our new single-origin espresso line — small-batch roasted for cafés across Europe. {hashtag|\\#|SpecialtyCoffee} {hashtag|\\#|Espresso}",
             "createdAt": 1751364000000,
             "publishedAt": 1751364000000,
             "visibility": "PUBLIC",
@@ -17,7 +17,7 @@
             "content": {
                 "media": {
                     "id": "urn:li:image:D4D22AQFixture000001",
-                    "altText": "A refrigerated trailer on a mountain road at dawn"
+                    "altText": "Bags of coffee on a roastery workbench at dawn"
                 }
             },
             "distribution": {
@@ -26,17 +26,17 @@
         },
         {
             "id": "urn:li:share:7208881234567890002",
-            "author": "urn:li:organization:1441",
-            "commentary": "Our CEO sat down with @[Transport Weekly](urn:li:organization:99001) to talk electrification, driver comfort, and what’s next for zero-emission logistics.",
+            "author": "urn:li:organization:2414183",
+            "commentary": "Our founder sat down with @[Brew Weekly](urn:li:organization:99001) to talk sourcing, café culture, and what’s next for sustainable roasting.",
             "createdAt": 1750759200000,
             "publishedAt": 1750762800000,
             "visibility": "PUBLIC",
             "lifecycleState": "PUBLISHED",
             "content": {
                 "article": {
-                    "source": "https://example.com/interviews/zero-emission-logistics",
-                    "title": "The Road to Zero-Emission Logistics",
-                    "description": "An interview about electrification and the future of transport refrigeration.",
+                    "source": "https://example.com/interviews/carbon-neutral-roasting",
+                    "title": "The Road to Carbon-Neutral Roasting",
+                    "description": "An interview about sourcing and the future of specialty coffee.",
                     "thumbnail": "urn:li:image:D4D22AQFixture000002"
                 }
             },
@@ -46,8 +46,8 @@
         },
         {
             "id": "urn:li:share:7208881234567890003",
-            "author": "urn:li:organization:1441",
-            "commentary": "Team spotlight \\(part 3\\): meet the engineers keeping fresh produce fresh across 12 countries. Their motto: \"cold is a craft\".",
+            "author": "urn:li:organization:2414183",
+            "commentary": "Team spotlight \\(part 3\\): meet the roasters keeping cafés stocked across 12 countries. Their motto: \"roast is a craft\".",
             "createdAt": 1750154400000,
             "publishedAt": 1750154400000,
             "visibility": "PUBLIC",
@@ -57,11 +57,11 @@
                     "images": [
                         {
                             "id": "urn:li:image:D4D22AQFixture000003",
-                            "altText": "Three engineers in front of a service bay"
+                            "altText": "Three roasters in front of a drum roaster"
                         },
                         {
                             "id": "urn:li:image:D4D22AQFixture000004",
-                            "altText": "Diagnostic laptop connected to a trailer unit"
+                            "altText": "Cupping table with sample trays"
                         }
                     ]
                 }
@@ -72,8 +72,8 @@
         },
         {
             "id": "urn:li:share:7208881234567890004",
-            "author": "urn:li:organization:1441",
-            "commentary": "Registration for our annual Dealer Summit is now open. Two days of product deep-dives, service training, and the 2027 roadmap. Seats are limited — link in the first comment.",
+            "author": "urn:li:organization:2414183",
+            "commentary": "Registration for our annual Barista Summit is now open. Two days of workshops, cuppings, and the 2027 lineup. Seats are limited — link in the first comment.",
             "createdAt": 1749549600000,
             "publishedAt": 1749549600000,
             "visibility": "PUBLIC",
@@ -85,8 +85,8 @@
         },
         {
             "id": "urn:li:share:7208881234567890005",
-            "author": "urn:li:organization:1441",
-            "commentary": "Proud moment: our A-500e unit won the {hashtag|\\#|IAA2026} Innovation Award for electric transport refrigeration. Thank you to everyone who voted!",
+            "author": "urn:li:organization:2414183",
+            "commentary": "Proud moment: our R-200 drum roaster won the {hashtag|\\#|HostMilano} Innovation Award for sustainable roasting. Thank you to everyone who voted!",
             "createdAt": 1748944800000,
             "publishedAt": 1748944800000,
             "visibility": "PUBLIC",
@@ -125,7 +125,7 @@
         }
     },
     "_organization": {
-        "name": "Acme Transport Refrigeration",
-        "url": "https://www.linkedin.com/company/acme-transport-refrigeration"
+        "name": "Copperline Coffee Roasters",
+        "url": "https://www.linkedin.com/company/copperline-coffee"
     }
 }

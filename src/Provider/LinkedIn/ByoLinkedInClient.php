@@ -98,6 +98,7 @@ final class ByoLinkedInClient implements LinkedInClientInterface
 
         $response = wp_remote_get($url, [
             'timeout' => 15,
+            'limit_response_size' => 4 * MB_IN_BYTES,
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'LinkedIn-Version' => $version,

@@ -40,6 +40,7 @@ final class RssProvider implements ProviderInterface
 
         $response = wp_remote_get($url, [
             'timeout' => 15,
+            'limit_response_size' => 2 * MB_IN_BYTES,
             'user-agent' => 'TheWPFeeds/' . THEWPFEEDS_VERSION . '; ' . home_url(),
         ]);
 

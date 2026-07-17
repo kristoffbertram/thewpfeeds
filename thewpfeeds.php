@@ -53,4 +53,6 @@ if (!is_readable(THEWPFEEDS_DIR . 'vendor/autoload.php')) {
 require THEWPFEEDS_DIR . 'vendor/autoload.php';
 require THEWPFEEDS_DIR . 'includes/functions.php';
 
+register_deactivation_hook(__FILE__, ['TheWPFeeds\Fetch\Cron', 'unschedule']);
+
 TheWPFeeds\Plugin::boot();
