@@ -31,6 +31,9 @@ rsync -a \
   --exclude='dist' \
   --exclude='tests' \
   --exclude='bin' \
+  --exclude='data/fixtures/rss2-sample.xml' \
+  --exclude='data/fixtures/atom-youtube.xml' \
+  --exclude='data/fixtures/bluesky-feed.json' \
   --exclude='blocks' \
   --exclude='phpcs.xml.dist' \
   --exclude='phpunit.xml.dist' \
