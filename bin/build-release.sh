@@ -1,8 +1,10 @@
 #!/bin/bash
 #
-# Build a distributable plugin ZIP (wp.org submission / direct sales).
+# Build distributable plugin ZIPs.
 #
-#   bash bin/build-release.sh            → dist/thewpfeeds-{version}.zip
+#   bash bin/build-release.sh
+#     → dist/thewpfeeds-{version}-wporg.zip   (no UpdateChecker — directory guideline 8)
+#     → dist/thewpfeeds-{version}.zip         (direct sales; updates opt-in via constant)
 #
 # Ships: PHP sources, compiled block (build/), templates, fixtures, autoloader.
 # Excludes: dev tooling, tests, block JS sources, repo docs.
@@ -44,9 +46,17 @@ rsync -a \
   ./ "$STAGE/"
 
 (cd dist && zip -qr "$(basename "$ZIP")" thewpfeeds)
+
+# wp.org variant: strip the external update checker (guideline 8) — Plugin.php
+# guards the wiring with class_exists, so removal is safe.
+rm "$STAGE/src/License/UpdateChecker.php"
+WPORG_ZIP="dist/thewpfeeds-${VERSION}-wporg.zip"
+(cd dist && zip -qr "$(basename "$WPORG_ZIP")" thewpfeeds)
+
 rm -rf "$STAGE"
 
 # Restore dev dependencies for local work.
 composer install --quiet
 
 echo "Built $ZIP ($(du -h "$ZIP" | cut -f1))"
+echo "Built $WPORG_ZIP ($(du -h "$WPORG_ZIP" | cut -f1))"

@@ -35,13 +35,13 @@ final class MockProvider implements ProviderInterface
     public function fetch(Feed $feed): ItemCollection
     {
         if (!is_readable($this->fixturePath)) {
-            throw new FetchException(sprintf('Fixture not readable: %s', $this->fixturePath));
+            throw new FetchException(esc_html(sprintf('Fixture not readable: %s', $this->fixturePath)));
         }
 
         $data = json_decode((string) file_get_contents($this->fixturePath), true);
 
         if (!is_array($data) || !is_array($data['elements'] ?? null)) {
-            throw new FetchException('Fixture is not a valid LinkedIn posts payload.');
+            throw new FetchException(esc_html('Fixture is not a valid LinkedIn posts payload.'));
         }
 
         $imageUrlMap = is_array($data['_images'] ?? null) ? $data['_images'] : [];

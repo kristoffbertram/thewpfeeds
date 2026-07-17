@@ -7,6 +7,10 @@
 
 declare(strict_types=1);
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use TheWPFeeds\Feed\Feed;
 use TheWPFeeds\Item\Item;
 use TheWPFeeds\Item\ItemCollection;

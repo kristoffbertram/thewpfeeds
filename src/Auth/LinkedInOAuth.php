@@ -59,13 +59,13 @@ final class LinkedInOAuth
         delete_transient(self::STATE_TRANSIENT);
 
         if (!is_array($expected) || !hash_equals((string) $expected['state'], $state)) {
-            throw new RuntimeException(__('OAuth state mismatch — please retry the connection.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('OAuth state mismatch — please retry the connection.', 'thewpfeeds'));
         }
 
         $connection = $this->connections->find((string) $expected['connection_id']);
 
         if ($connection === null) {
-            throw new RuntimeException(__('Unknown connection.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('Unknown connection.', 'thewpfeeds'));
         }
 
         $secrets = $this->connections->tokens()->get($connection->id);
@@ -117,7 +117,7 @@ final class LinkedInOAuth
         ]);
 
         if (is_wp_error($response)) {
-            throw new RuntimeException($response->get_error_message());
+            throw new RuntimeException(esc_html($response->get_error_message()));
         }
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
@@ -125,11 +125,11 @@ final class LinkedInOAuth
         if (!is_array($data) || !is_string($data['access_token'] ?? null)) {
             $error = is_array($data) ? (string) ($data['error_description'] ?? $data['error'] ?? '') : '';
 
-            throw new RuntimeException(sprintf(
+            throw new RuntimeException(esc_html(sprintf(
                 'LinkedIn token request failed (HTTP %d)%s',
                 (int) wp_remote_retrieve_response_code($response),
                 $error !== '' ? ': ' . $error : ''
-            ));
+            )));
         }
 
         return $data;

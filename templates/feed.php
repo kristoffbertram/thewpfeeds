@@ -20,12 +20,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$wrapper = $args['wrapper_attributes'] ?? sprintf(
+$thewpfeeds_wrapper = $args['wrapper_attributes'] ?? sprintf(
     'class="thewpfeeds thewpfeeds--%s"',
     esc_attr(sanitize_html_class($feed->slug))
 );
 ?>
-<div <?php echo $wrapper; // phpcs:ignore WordPress.Security.EscapeOutput -- built above / by get_block_wrapper_attributes(). ?>>
+<div <?php echo $thewpfeeds_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput -- built above / by get_block_wrapper_attributes(). ?>>
     <?php
     thewpfeeds_template('layout-' . $layout, [
         'feed' => $feed,

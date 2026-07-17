@@ -87,10 +87,10 @@ final class ByoLinkedInClient implements LinkedInClientInterface
         $accessToken = (string) ($secrets['access_token'] ?? '');
 
         if ($accessToken === '') {
-            throw new FetchException(sprintf(
+            throw new FetchException(esc_html(sprintf(
                 'LinkedIn connection "%s" has no access token — connect it first.',
                 $connection->label
-            ));
+            )));
         }
 
         /** This filter exists because LinkedIn sunsets API versions. */
@@ -106,7 +106,7 @@ final class ByoLinkedInClient implements LinkedInClientInterface
         ]);
 
         if (is_wp_error($response)) {
-            throw new FetchException($response->get_error_message());
+            throw new FetchException(esc_html($response->get_error_message()));
         }
 
         $status = (int) wp_remote_retrieve_response_code($response);
@@ -121,11 +121,11 @@ final class ByoLinkedInClient implements LinkedInClientInterface
             $body = json_decode(wp_remote_retrieve_body($response), true);
             $message = is_array($body) ? (string) ($body['message'] ?? '') : '';
 
-            throw new FetchException(sprintf(
+            throw new FetchException(esc_html(sprintf(
                 'LinkedIn API error (HTTP %d)%s',
                 $status,
                 $message !== '' ? ': ' . $message : ''
-            ));
+            )));
         }
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
@@ -156,11 +156,11 @@ final class ByoLinkedInClient implements LinkedInClientInterface
         } catch (Throwable $e) {
             $this->connections->save($connection->with(['needs_reauth' => true]));
 
-            throw new FetchException(sprintf(
+            throw new FetchException(esc_html(sprintf(
                 'LinkedIn token expired and refresh failed (%s) — reconnect "%s" under Feeds → Connections.',
                 $e->getMessage(),
                 $connection->label
-            ));
+            )));
         }
     }
 }

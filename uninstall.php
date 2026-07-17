@@ -49,10 +49,10 @@ $thewpfeeds_dir = trailingslashit($thewpfeeds_upload['basedir']) . 'thewpfeeds';
 
 if (is_dir($thewpfeeds_dir)) {
     foreach (glob($thewpfeeds_dir . '/*/*') ?: [] as $thewpfeeds_file) {
-        @unlink($thewpfeeds_file);
+        @unlink($thewpfeeds_file); // phpcs:ignore WordPress.WP.AlternativeFunctions -- uninstall cleanup of our own uploads/thewpfeeds dir.
     }
     foreach (glob($thewpfeeds_dir . '/*', GLOB_ONLYDIR) ?: [] as $thewpfeeds_subdir) {
-        @rmdir($thewpfeeds_subdir);
+        @rmdir($thewpfeeds_subdir); // phpcs:ignore WordPress.WP.AlternativeFunctions
     }
-    @rmdir($thewpfeeds_dir);
+    @rmdir($thewpfeeds_dir); // phpcs:ignore WordPress.WP.AlternativeFunctions
 }

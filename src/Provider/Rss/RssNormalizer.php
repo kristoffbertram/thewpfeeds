@@ -186,7 +186,7 @@ final class RssNormalizer
 
     private function plainText(string $html): string
     {
-        $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8'); // phpcs:ignore WordPress.WP.AlternativeFunctions.strip_tags_strip_tags -- normalizer is intentionally WP-free (pure, unit-tested without WordPress).
 
         return trim((string) preg_replace('/[ \t]*\n[ \t]*/', "\n", $text));
     }

@@ -35,7 +35,7 @@ final class BlueskyProvider implements ProviderInterface
         $handle = ltrim(trim((string) $feed->setting('handle', '')), '@');
 
         if ($handle === '') {
-            throw new FetchException(__('Bluesky handle is missing.', 'thewpfeeds'));
+            throw new FetchException(esc_html__('Bluesky handle is missing.', 'thewpfeeds'));
         }
 
         $url = add_query_arg([
@@ -47,7 +47,7 @@ final class BlueskyProvider implements ProviderInterface
         $response = wp_remote_get($url, ['timeout' => 15]);
 
         if (is_wp_error($response)) {
-            throw new FetchException($response->get_error_message());
+            throw new FetchException(esc_html($response->get_error_message()));
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
@@ -55,10 +55,10 @@ final class BlueskyProvider implements ProviderInterface
         if ((int) wp_remote_retrieve_response_code($response) !== 200 || !is_array($body)) {
             $message = is_array($body) ? (string) ($body['message'] ?? '') : '';
 
-            throw new FetchException(sprintf(
+            throw new FetchException(esc_html(sprintf(
                 'Bluesky API error%s — check the handle (e.g. "name.bsky.social").',
                 $message !== '' ? ': ' . $message : ''
-            ));
+            )));
         }
 
         return (new ItemCollection($this->normalizer->normalize($body)))->take($feed->count);

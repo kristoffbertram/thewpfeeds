@@ -87,7 +87,14 @@ final class Plugin
         (new FeedsPage($this->feeds, $this->providers, $this->connections, $this->cache, $this->runner, $this->license, $licenseSection))->hooks();
         (new OAuthController($this->oauth))->hooks();
         $licenseSection->hooks();
-        (new UpdateChecker($licenseClient))->hooks();
+
+        // Absent from the wordpress.org build (updates come from the directory);
+        // present in direct-sold builds where it is opt-in via constant/filter.
+        // File check (not class_exists): the optimized classmap in release
+        // builds would emit a warning autoloading a stripped file.
+        if (is_readable(THEWPFEEDS_DIR . 'src/License/UpdateChecker.php')) {
+            (new UpdateChecker($licenseClient))->hooks();
+        }
 
         if (defined('WP_CLI') && WP_CLI) {
             \WP_CLI::add_command('thewpfeeds', new FetchCommand($this->feeds, $this->runner, $this->cache));

@@ -67,7 +67,7 @@ final class FeedsPage
             return;
         }
 
-        $message = sanitize_text_field(rawurldecode(wp_unslash($_GET['thewpfeeds_message'] ?? '')));
+        $message = sanitize_text_field(rawurldecode(wp_unslash($_GET['thewpfeeds_message'] ?? ''))); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended -- sanitized after decode; display-only notice.
 
         [$class, $text] = match ($type) {
             'connected' => ['notice-success', sprintf(
@@ -90,7 +90,7 @@ final class FeedsPage
     {
         $this->authorize('thewpfeeds_save_feed');
 
-        $id = (int) ($_POST['feed_id'] ?? 0);
+        $id = (int) ($_POST['feed_id'] ?? 0); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.Security.NonceVerification.Missing -- int cast sanitizes; nonce verified in authorize().
         $providerId = sanitize_key(wp_unslash($_POST['provider'] ?? 'mock'));
         $provider = $this->providers->get($providerId);
 

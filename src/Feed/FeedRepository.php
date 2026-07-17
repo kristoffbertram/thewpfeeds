@@ -79,9 +79,7 @@ final class FeedRepository
         $isNew = $feed->id === 0;
 
         if ($isNew && !$this->license->canCreateFeed($this->countBillable())) {
-            throw new RuntimeException(
-                __('Feed limit reached. Upgrade to The WP Feeds Pro for unlimited feeds.', 'thewpfeeds')
-            );
+            throw new RuntimeException(esc_html__('Feed limit reached. Upgrade to The WP Feeds Pro for unlimited feeds.', 'thewpfeeds'));
         }
 
         $postData = [
@@ -99,7 +97,7 @@ final class FeedRepository
         }
 
         if (is_wp_error($result)) {
-            throw new RuntimeException($result->get_error_message());
+            throw new RuntimeException(esc_html($result->get_error_message()));
         }
 
         $id = (int) $result;
@@ -115,7 +113,7 @@ final class FeedRepository
         $saved = $this->find($id);
 
         if ($saved === null) {
-            throw new RuntimeException(__('Feed could not be saved.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('Feed could not be saved.', 'thewpfeeds'));
         }
 
         return $saved;

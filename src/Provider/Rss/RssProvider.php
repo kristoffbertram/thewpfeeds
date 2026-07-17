@@ -35,7 +35,7 @@ final class RssProvider implements ProviderInterface
         $url = (string) $feed->setting('feed_url', '');
 
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new FetchException(__('Feed URL is missing or invalid.', 'thewpfeeds'));
+            throw new FetchException(esc_html__('Feed URL is missing or invalid.', 'thewpfeeds'));
         }
 
         $response = wp_remote_get($url, [
@@ -44,19 +44,19 @@ final class RssProvider implements ProviderInterface
         ]);
 
         if (is_wp_error($response)) {
-            throw new FetchException($response->get_error_message());
+            throw new FetchException(esc_html($response->get_error_message()));
         }
 
         $status = (int) wp_remote_retrieve_response_code($response);
 
         if ($status !== 200) {
-            throw new FetchException(sprintf('Feed returned HTTP %d.', $status));
+            throw new FetchException(esc_html(sprintf('Feed returned HTTP %d.', $status)));
         }
 
         try {
             $items = $this->normalizer->normalize(wp_remote_retrieve_body($response));
         } catch (\RuntimeException $e) {
-            throw new FetchException($e->getMessage());
+            throw new FetchException(esc_html($e->getMessage()));
         }
 
         return (new ItemCollection($items))->take($feed->count);

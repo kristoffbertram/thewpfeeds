@@ -20,7 +20,7 @@ final class ProxyLinkedInClient implements LinkedInClientInterface
     public function getOrganizationPosts(Feed $feed, string $orgUrn, int $count): array
     {
         throw new FetchException(
-            __('The WP Feeds proxy service is not available yet — use a bring-your-own LinkedIn app connection.', 'thewpfeeds')
+            esc_html__('The WP Feeds proxy service is not available yet — use a bring-your-own LinkedIn app connection.', 'thewpfeeds')
         );
     }
 

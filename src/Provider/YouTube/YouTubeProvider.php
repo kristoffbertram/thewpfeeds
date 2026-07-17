@@ -37,7 +37,7 @@ final class YouTubeProvider implements ProviderInterface
         $channelId = trim((string) $feed->setting('channel_id', ''));
 
         if ($channelId === '') {
-            throw new FetchException(__('YouTube channel ID is missing.', 'thewpfeeds'));
+            throw new FetchException(esc_html__('YouTube channel ID is missing.', 'thewpfeeds'));
         }
 
         $url = 'https://www.youtube.com/feeds/videos.xml?' . http_build_query(
@@ -49,17 +49,17 @@ final class YouTubeProvider implements ProviderInterface
         $response = wp_remote_get($url, ['timeout' => 15]);
 
         if (is_wp_error($response)) {
-            throw new FetchException($response->get_error_message());
+            throw new FetchException(esc_html($response->get_error_message()));
         }
 
         if ((int) wp_remote_retrieve_response_code($response) !== 200) {
-            throw new FetchException(__('YouTube feed not found — check the channel ID (it starts with "UC").', 'thewpfeeds'));
+            throw new FetchException(esc_html__('YouTube feed not found — check the channel ID (it starts with "UC").', 'thewpfeeds'));
         }
 
         try {
             $items = $this->normalizer->normalize(wp_remote_retrieve_body($response), 'youtube');
         } catch (\RuntimeException $e) {
-            throw new FetchException($e->getMessage());
+            throw new FetchException(esc_html($e->getMessage()));
         }
 
         return (new ItemCollection($items))->take($feed->count);
