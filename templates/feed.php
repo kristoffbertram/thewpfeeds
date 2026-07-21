@@ -24,8 +24,14 @@ $thewpfeeds_wrapper = $args['wrapper_attributes'] ?? sprintf(
     'class="thewpfeeds thewpfeeds--%s"',
     esc_attr(sanitize_html_class($feed->slug))
 );
+
+// Escaped at output: only a div with these attributes survives, whatever
+// the wrapper string contained (block-supplied attrs come pre-escaped from
+// get_block_wrapper_attributes(), but render args are an open API).
+echo wp_kses('<div ' . $thewpfeeds_wrapper . '>', [
+    'div' => ['class' => [], 'id' => [], 'style' => []],
+]);
 ?>
-<div <?php echo $thewpfeeds_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput -- built above / by get_block_wrapper_attributes(). ?>>
     <?php
     thewpfeeds_template('layout-' . $layout, [
         'feed' => $feed,

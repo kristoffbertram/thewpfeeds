@@ -38,6 +38,7 @@ final class FeedsPage
     public function hooks(): void
     {
         add_action('admin_menu', [$this, 'registerMenu']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminStyle']);
         add_action('admin_post_thewpfeeds_save_feed', [$this, 'saveFeed']);
         add_action('admin_post_thewpfeeds_delete_feed', [$this, 'deleteFeed']);
         add_action('admin_post_thewpfeeds_refresh_feed', [$this, 'refreshFeed']);
@@ -229,8 +230,9 @@ final class FeedsPage
     private function currentTab(): string
     {
         $tab = sanitize_key(wp_unslash($_GET['tab'] ?? ''));
+        $tabs = $this->licenseSection !== null ? ['connections', 'license'] : ['connections'];
 
-        return in_array($tab, ['connections', 'license'], true) ? $tab : 'feeds';
+        return in_array($tab, $tabs, true) ? $tab : 'feeds';
     }
 
     /**
@@ -238,16 +240,16 @@ final class FeedsPage
      * of wp-admin is never touched. Tabs use core .nav-tab classes so the
      * user's admin color scheme applies.
      */
-    private function renderHeader(string $activeTab): void
+    /** Registered on admin_enqueue_scripts; loads only on this screen. */
+    public function enqueueAdminStyle(string $hookSuffix): void
     {
-        $tabs = [
-            'feeds' => __('Feeds', 'thewpfeeds'),
-            'connections' => __('Connections', 'thewpfeeds'),
-            'license' => __('License', 'thewpfeeds'),
-        ];
+        if ($hookSuffix !== 'toplevel_page_' . self::SLUG) {
+            return;
+        }
 
-        ?>
-        <style>
+        wp_register_style('thewpfeeds-admin', false, [], THEWPFEEDS_VERSION);
+        wp_enqueue_style('thewpfeeds-admin');
+        wp_add_inline_style('thewpfeeds-admin', '
             .twpf-header { background: #fff; border-bottom: 1px solid #dcdcde; margin: 0 0 0 -20px; padding: 16px 20px 0; }
             .twpf-header__row { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; }
             .twpf-header__mark { width: 28px; height: 28px; flex: none; }
@@ -258,7 +260,21 @@ final class FeedsPage
             .twpf-header__pill--pro { background: #edfaef; color: #00832a; }
             .twpf-header__pill--free { background: #f0f0f1; color: #50575e; }
             .twpf-header .nav-tab-wrapper { border-bottom: 0; padding: 0; margin: 0; }
-        </style>
+        ');
+    }
+
+    private function renderHeader(string $activeTab): void
+    {
+        $tabs = [
+            'feeds' => __('Feeds', 'thewpfeeds'),
+            'connections' => __('Connections', 'thewpfeeds'),
+        ];
+
+        if ($this->licenseSection !== null) {
+            $tabs['license'] = __('License', 'thewpfeeds');
+        }
+
+        ?>
         <div class="twpf-header">
             <div class="twpf-header__row">
                 <svg class="twpf-header__mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
@@ -270,11 +286,13 @@ final class FeedsPage
                 <h1 class="twpf-header__title"><?php esc_html_e('The WP Feeds', 'thewpfeeds'); ?></h1>
                 <span class="twpf-header__version"><?php echo esc_html('v' . THEWPFEEDS_VERSION); ?></span>
                 <div class="twpf-header__meta">
-                    <?php if ($this->license->isPro()) : ?>
-                        <span class="twpf-header__pill twpf-header__pill--pro"><?php esc_html_e('Pro', 'thewpfeeds'); ?></span>
-                    <?php else : ?>
-                        <span class="twpf-header__pill twpf-header__pill--free"><?php esc_html_e('Free · 1 feed', 'thewpfeeds'); ?></span>
-                        <a href="https://wp.kristoffbertram.be" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Upgrade', 'thewpfeeds'); ?></a>
+                    <?php if ($this->licenseSection !== null) : ?>
+                        <?php if ($this->license->isPro()) : ?>
+                            <span class="twpf-header__pill twpf-header__pill--pro"><?php esc_html_e('Pro', 'thewpfeeds'); ?></span>
+                        <?php else : ?>
+                            <span class="twpf-header__pill twpf-header__pill--free"><?php esc_html_e('Free · 1 feed', 'thewpfeeds'); ?></span>
+                            <a href="https://wp.kristoffbertram.be" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Upgrade', 'thewpfeeds'); ?></a>
+                        <?php endif; ?>
                     <?php endif; ?>
                     <a href="https://wp.kristoffbertram.be/docs" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Docs', 'thewpfeeds'); ?></a>
                     <a href="mailto:plugins@kristoffbertram.be"><?php esc_html_e('Support', 'thewpfeeds'); ?></a>
@@ -297,7 +315,7 @@ final class FeedsPage
         $feeds = $this->feeds->all();
         $canAdd = $this->license->canCreateFeed($this->feeds->countBillable());
 
-        if ($canAdd) {
+        if ($canAdd || $this->licenseSection === null) {
             printf(
                 '<a href="%s" class="page-title-action">%s</a>',
                 esc_url(add_query_arg(['page' => self::SLUG, 'add' => 1], admin_url('admin.php'))),

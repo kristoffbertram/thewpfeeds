@@ -58,16 +58,22 @@ final class Plugin
 
     private function __construct()
     {
-        $licenseClient = new LicenseClient();
+        // The wordpress.org build ships without the remote-license stack
+        // (Guideline 5: no locked features) — everything is unlimited there.
+        // Direct-sold builds keep it: RemoteLicense behaves as the free tier
+        // (1 feed) until a key validates against the license server.
+        $hasLicenseStack = is_readable(THEWPFEEDS_DIR . 'src/License/RemoteLicense.php');
+        $licenseClient = $hasLicenseStack ? new LicenseClient() : null;
 
         /**
-         * Filter the active license implementation. RemoteLicense behaves as
-         * the free tier (1 feed) until a key is entered and validates against
-         * the license server.
+         * Filter the active license implementation.
          *
          * @param LicenseInterface $license
          */
-        $this->license = apply_filters('thewpfeeds_license', new RemoteLicense($licenseClient));
+        $this->license = apply_filters(
+            'thewpfeeds_license',
+            $hasLicenseStack ? new RemoteLicense($licenseClient) : new \TheWPFeeds\License\UnlimitedLicense()
+        );
 
         $this->feeds = new FeedRepository($this->license);
         $this->cache = new ItemCache();
@@ -81,18 +87,18 @@ final class Plugin
         add_action('init', [$this, 'onInit']);
         add_action('rest_api_init', fn () => (new FeedsController($this->feeds))->registerRoutes());
 
-        $licenseSection = new LicenseSection($licenseClient, $this->license);
+        $licenseSection = $licenseClient !== null ? new LicenseSection($licenseClient, $this->license) : null;
 
         $this->cron->hooks();
         (new FeedsPage($this->feeds, $this->providers, $this->connections, $this->cache, $this->runner, $this->license, $licenseSection))->hooks();
         (new OAuthController($this->oauth))->hooks();
-        $licenseSection->hooks();
+        $licenseSection?->hooks();
 
         // Absent from the wordpress.org build (updates come from the directory);
         // present in direct-sold builds where it is opt-in via constant/filter.
         // File check (not class_exists): the optimized classmap in release
         // builds would emit a warning autoloading a stripped file.
-        if (is_readable(THEWPFEEDS_DIR . 'src/License/UpdateChecker.php')) {
+        if ($licenseClient !== null && is_readable(THEWPFEEDS_DIR . 'src/License/UpdateChecker.php')) {
             (new UpdateChecker($licenseClient))->hooks();
         }
 

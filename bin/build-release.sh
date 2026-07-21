@@ -34,10 +34,8 @@ rsync -a \
   --exclude='data/fixtures/rss2-sample.xml' \
   --exclude='data/fixtures/atom-youtube.xml' \
   --exclude='data/fixtures/bluesky-feed.json' \
-  --exclude='blocks' \
   --exclude='phpcs.xml.dist' \
   --exclude='phpunit.xml.dist' \
-  --exclude='package.json' \
   --exclude='package-lock.json' \
   --exclude='webpack.config.js' \
   --exclude='CLAUDE.md' \
@@ -50,10 +48,16 @@ rsync -a \
 
 (cd dist && zip -qr "$(basename "$ZIP")" thewpfeeds)
 
-# wp.org variant: strip the external update checker (guideline 8) — Plugin.php
-# guards the wiring with a file check, so removal is safe. Regenerate the
-# optimized classmap so no entry points at the stripped file.
-rm "$STAGE/src/License/UpdateChecker.php"
+# wp.org variant (directory guidelines): strip the ENTIRE remote-license stack
+# — no license checks, no update injection, no upsell surfaces ship to the
+# directory (Guidelines 5 & 8). Plugin.php falls back to UnlimitedLicense via
+# file checks. Regenerate the optimized classmap so no entry points at
+# stripped files.
+rm "$STAGE/src/License/UpdateChecker.php" \
+   "$STAGE/src/License/RemoteLicense.php" \
+   "$STAGE/src/License/LicenseClient.php" \
+   "$STAGE/src/License/FreeLicense.php" \
+   "$STAGE/src/Admin/LicenseSection.php"
 (cd "$STAGE" && composer dump-autoload --no-dev --optimize --quiet)
 WPORG_ZIP="dist/thewpfeeds-${VERSION}-wporg.zip"
 (cd dist && zip -qr "$(basename "$WPORG_ZIP")" thewpfeeds)

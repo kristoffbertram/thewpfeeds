@@ -36,7 +36,7 @@ Every provider — LinkedIn company pages, RSS/Atom, YouTube channels, Bluesky p
 * **YouTube (channel)** — keyless public channel feed, no API key required.
 * **Bluesky (profile)** — public API, no authentication.
 
-The free version runs one feed with every feature included. [The WP Feeds Pro](https://wp.kristoffbertram.be) removes the feed limit. Full developer documentation: [wp.kristoffbertram.be/docs](https://wp.kristoffbertram.be/docs).
+The plugin is fully functional with unlimited feeds. A separately distributed version with a managed LinkedIn connection service and direct support is available from [wp.kristoffbertram.be](https://wp.kristoffbertram.be). Full developer documentation: [wp.kristoffbertram.be/docs](https://wp.kristoffbertram.be/docs).
 
 == External services ==
 
@@ -46,9 +46,12 @@ This plugin talks to external services only to fetch the feed content you config
 * **YouTube feed** (www.youtube.com/feeds) — only for configured YouTube feeds. [Terms](https://www.youtube.com/t/terms), [Privacy](https://policies.google.com/privacy).
 * **Bluesky public API** (public.api.bsky.app) — only for configured Bluesky feeds. [Terms](https://bsky.social/about/support/tos), [Privacy](https://bsky.social/about/support/privacy-policy).
 * **Any RSS/Atom URL you configure** is fetched from your server on your cache schedule.
-* **License server** (wp.kristoffbertram.be) — contacted only if you enter a Pro license key, to validate it. No data is sent otherwise. [Privacy](https://wp.kristoffbertram.be/privacy), [Terms](https://wp.kristoffbertram.be/terms).
 
 All fetching happens server-side on your cache schedule; site visitors never contact these services.
+
+== Source code ==
+
+The complete, unminified source — including the block editor JavaScript in `blocks/` and the build setup — ships with the plugin and is maintained publicly at [github.com/kristoffbertram/thewpfeeds](https://github.com/kristoffbertram/thewpfeeds). The compiled bundle in `build/` is generated from `blocks/` by running `npm install` and `npm run build` (uses @wordpress/scripts).
 
 == Installation ==
 
