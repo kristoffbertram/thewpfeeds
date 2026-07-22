@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Template;
+namespace FreshetFeeds\Template;
 
 /**
  * WooCommerce-style template resolution:
- *   {child theme}/thewpfeeds/{name}.php
- *   {parent theme}/thewpfeeds/{name}.php
+ *   {child theme}/freshet-feeds/{name}.php
+ *   {parent theme}/freshet-feeds/{name}.php
  *   {plugin}/templates/{name}.php
  */
 final class TemplateLoader
 {
     public function __construct(
         private readonly string $pluginTemplateDir,
-        private readonly string $themeSubdir = 'thewpfeeds',
+        private readonly string $themeSubdir = 'freshet-feeds',
     ) {
     }
 
@@ -27,9 +27,9 @@ final class TemplateLoader
         /**
          * Filter the theme subdirectory searched for template overrides.
          *
-         * @param string $subdir Default 'thewpfeeds'.
+         * @param string $subdir Default 'freshet-feeds'.
          */
-        $subdir = (string) apply_filters('thewpfeeds_template_path', $this->themeSubdir);
+        $subdir = (string) apply_filters('freshet_feeds_template_path', $this->themeSubdir);
 
         $located = locate_template([trailingslashit($subdir) . $file]);
 
@@ -44,7 +44,7 @@ final class TemplateLoader
          * @param string $located Absolute path ('' if not found).
          * @param string $name    Template name without extension.
          */
-        $located = (string) apply_filters('thewpfeeds_template', $located, $name);
+        $located = (string) apply_filters('freshet_feeds_template', $located, $name);
 
         return $located !== '' && is_readable($located) ? $located : null;
     }
@@ -101,7 +101,7 @@ final class TemplateLoader
         if ($template === null) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 trigger_error(
-                    sprintf('The WP Feeds: template "%s" not found.', esc_html($name)),
+                    sprintf('Freshet Feeds: template "%s" not found.', esc_html($name)),
                     E_USER_NOTICE
                 );
             }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
-use TheWPFeeds\License\FreeLicense;
+use FreshetFeeds\License\FreeLicense;
 
 final class FreeLicenseTest extends TestCase
 {

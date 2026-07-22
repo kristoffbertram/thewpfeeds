@@ -1,5 +1,5 @@
 {
-    "name": "thewpfeeds/thewpfeeds",
+    "name": "freshet-feeds/freshet-feeds",
     "description": "Developer-first external feeds for WordPress.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -14,12 +14,12 @@
     },
     "autoload": {
         "psr-4": {
-            "TheWPFeeds\\": "src/"
+            "FreshetFeeds\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TheWPFeeds\\Tests\\": "tests/"
+            "FreshetFeeds\\Tests\\": "tests/"
         }
     },
     "scripts": {

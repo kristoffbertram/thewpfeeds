@@ -16,15 +16,15 @@
 
 ## v1.x
 
-- Shortcode `[thewpfeeds feed="..."]`
-- Remote license client (EDD Software Licensing or LemonSqueezy) via `thewpfeeds_license` filter
+- Shortcode `[freshet-feeds feed="..."]`
+- Remote license client (EDD Software Licensing or LemonSqueezy) via `freshet_feeds_license` filter
 - Template-version status screen (headers already shipped)
 - Outdated-override detection
 
 ## v2
 
-- Vendor proxy service (api.thewpfeeds.com) — the `ProxyLinkedInClient` stub and
-  `thewpfeeds_enable_proxy` filter already define the seam; customers connect
+- Vendor proxy service (api.freshet-feeds.com) — the `ProxyLinkedInClient` stub and
+  `freshet_feeds_enable_proxy` filter already define the seam; customers connect
   without creating a LinkedIn app
 - ~~Provider #2/#3: RSS~~ Shipped: RSS/Atom, YouTube (keyless channel Atom), Bluesky (public API)
 - Instagram/Facebook (Meta Graph — requires app review, like LinkedIn); X only if API pricing ever normalizes

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\License;
+namespace FreshetFeeds\License;
 
 /**
- * HTTP client for the license server (wp.kristoffbertram.be). All endpoints
+ * HTTP client for the license server (freshet.studio). All endpoints
  * return the {success, data?, error?, error_code?} envelope; license-level
  * failures arrive as HTTP 200 with success:false — one parse path.
  */
 final class LicenseClient
 {
-    public const PRODUCT = 'thewpfeeds-pro';
+    public const PRODUCT = 'freshet-feeds-pro';
 
     private string $baseUrl;
 
@@ -23,8 +23,8 @@ final class LicenseClient
          * @param string $baseUrl
          */
         $this->baseUrl = untrailingslashit((string) apply_filters(
-            'thewpfeeds_license_server',
-            $baseUrl ?? 'https://wp.kristoffbertram.be'
+            'freshet_feeds_license_server',
+            $baseUrl ?? 'https://freshet.studio'
         ));
     }
 
@@ -83,7 +83,7 @@ final class LicenseClient
                 'success' => false,
                 'error' => sprintf(
                     /* translators: %d: HTTP status code */
-                    __('Unexpected response from the license server (HTTP %d).', 'thewpfeeds'),
+                    __('Unexpected response from the license server (HTTP %d).', 'freshet-feeds'),
                     (int) wp_remote_retrieve_response_code($response)
                 ),
                 'error_code' => 'invalid_response',

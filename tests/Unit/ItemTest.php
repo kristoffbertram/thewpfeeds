@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
 use Brain\Monkey\Functions;
 use DateTimeImmutable;
 use DateTimeZone;
-use TheWPFeeds\Item\Item;
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Item\ItemImage;
+use FreshetFeeds\Item\Item;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Item\ItemImage;
 
 final class ItemTest extends TestCase
 {
@@ -48,11 +48,11 @@ final class ItemTest extends TestCase
 
     public function testImagePrefersLocalUrl(): void
     {
-        $image = new ItemImage('https://remote.example/img.jpg', 'https://site.test/wp-content/uploads/thewpfeeds/1/abc.jpg');
+        $image = new ItemImage('https://remote.example/img.jpg', 'https://site.test/wp-content/uploads/freshet-feeds/1/abc.jpg');
         $item = $this->item(['image' => $image]);
 
         $this->assertTrue($item->hasImage());
-        $this->assertSame('https://site.test/wp-content/uploads/thewpfeeds/1/abc.jpg', $item->image());
+        $this->assertSame('https://site.test/wp-content/uploads/freshet-feeds/1/abc.jpg', $item->image());
     }
 
     public function testImageFallsBackToRemoteUrl(): void

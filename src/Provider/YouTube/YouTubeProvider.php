@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\YouTube;
+namespace FreshetFeeds\Provider\YouTube;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Provider\FetchException;
-use TheWPFeeds\Provider\ProviderInterface;
-use TheWPFeeds\Provider\Rss\RssNormalizer;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Provider\FetchException;
+use FreshetFeeds\Provider\ProviderInterface;
+use FreshetFeeds\Provider\Rss\RssNormalizer;
 
 /**
  * YouTube channel uploads via the keyless public Atom feed
@@ -29,7 +29,7 @@ final class YouTubeProvider implements ProviderInterface
 
     public function label(): string
     {
-        return __('YouTube (channel)', 'thewpfeeds');
+        return __('YouTube (channel)', 'freshet-feeds');
     }
 
     public function fetch(Feed $feed): ItemCollection
@@ -37,7 +37,7 @@ final class YouTubeProvider implements ProviderInterface
         $channelId = trim((string) $feed->setting('channel_id', ''));
 
         if ($channelId === '') {
-            throw new FetchException(esc_html__('YouTube channel ID is missing.', 'thewpfeeds'));
+            throw new FetchException(esc_html__('YouTube channel ID is missing.', 'freshet-feeds'));
         }
 
         $url = 'https://www.youtube.com/feeds/videos.xml?' . http_build_query(
@@ -53,7 +53,7 @@ final class YouTubeProvider implements ProviderInterface
         }
 
         if ((int) wp_remote_retrieve_response_code($response) !== 200) {
-            throw new FetchException(esc_html__('YouTube feed not found — check the channel ID (it starts with "UC").', 'thewpfeeds'));
+            throw new FetchException(esc_html__('YouTube feed not found — check the channel ID (it starts with "UC").', 'freshet-feeds'));
         }
 
         try {
@@ -69,9 +69,9 @@ final class YouTubeProvider implements ProviderInterface
     {
         return [
             'channel_id' => [
-                'label' => __('Channel ID', 'thewpfeeds'),
+                'label' => __('Channel ID', 'freshet-feeds'),
                 'type' => 'text',
-                'help' => __('The UC… channel ID (youtube.com/channel/UC…), or a PL… playlist ID. Not the @handle.', 'thewpfeeds'),
+                'help' => __('The UC… channel ID (youtube.com/channel/UC…), or a PL… playlist ID. Not the @handle.', 'freshet-feeds'),
                 'required' => true,
             ],
         ];

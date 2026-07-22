@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Fetch;
+namespace FreshetFeeds\Fetch;
 
-use TheWPFeeds\Feed\Feed;
+use FreshetFeeds\Feed\Feed;
 
 /**
  * Per-feed transient lock: prevents fetch stampedes (concurrent page loads,
@@ -34,6 +34,6 @@ final class FetchLock
 
     private function key(Feed $feed): string
     {
-        return 'thewpfeeds_lock_' . $feed->id;
+        return 'freshet_feeds_lock_' . $feed->id;
     }
 }

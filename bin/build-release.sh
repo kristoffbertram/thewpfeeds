@@ -3,8 +3,8 @@
 # Build distributable plugin ZIPs.
 #
 #   bash bin/build-release.sh
-#     → dist/thewpfeeds-{version}-wporg.zip   (no UpdateChecker — directory guideline 8)
-#     → dist/thewpfeeds-{version}.zip         (direct sales; updates opt-in via constant)
+#     → dist/freshet-feeds-{version}-wporg.zip   (no UpdateChecker — directory guideline 8)
+#     → dist/freshet-feeds-{version}.zip         (direct sales; updates opt-in via constant)
 #
 # Ships: PHP sources, compiled block (build/), templates, fixtures, autoloader.
 # Excludes: dev tooling, tests, block JS sources, repo docs.
@@ -13,11 +13,11 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-VERSION=$(grep -m1 "THEWPFEEDS_VERSION" thewpfeeds.php | sed "s/.*'\([0-9.]*\)'.*/\1/")
-STAGE="dist/thewpfeeds"
-ZIP="dist/thewpfeeds-${VERSION}.zip"
+VERSION=$(grep -m1 "FRESHET_FEEDS_VERSION" freshet-feeds.php | sed "s/.*'\([0-9.]*\)'.*/\1/")
+STAGE="dist/freshet-feeds"
+ZIP="dist/freshet-feeds-${VERSION}.zip"
 
-echo "Building thewpfeeds ${VERSION}..."
+echo "Building freshet-feeds ${VERSION}..."
 
 npm run build --silent
 composer install --no-dev --quiet --optimize-autoloader
@@ -46,7 +46,7 @@ rsync -a \
   --exclude='.DS_Store' \
   ./ "$STAGE/"
 
-(cd dist && zip -qr "$(basename "$ZIP")" thewpfeeds)
+(cd dist && zip -qr "$(basename "$ZIP")" freshet-feeds)
 
 # wp.org variant (directory guidelines): strip the ENTIRE remote-license stack
 # — no license checks, no update injection, no upsell surfaces ship to the
@@ -59,8 +59,8 @@ rm "$STAGE/src/License/UpdateChecker.php" \
    "$STAGE/src/License/FreeLicense.php" \
    "$STAGE/src/Admin/LicenseSection.php"
 (cd "$STAGE" && composer dump-autoload --no-dev --optimize --quiet)
-WPORG_ZIP="dist/thewpfeeds-${VERSION}-wporg.zip"
-(cd dist && zip -qr "$(basename "$WPORG_ZIP")" thewpfeeds)
+WPORG_ZIP="dist/freshet-feeds-${VERSION}-wporg.zip"
+(cd dist && zip -qr "$(basename "$WPORG_ZIP")" freshet-feeds)
 
 rm -rf "$STAGE"
 

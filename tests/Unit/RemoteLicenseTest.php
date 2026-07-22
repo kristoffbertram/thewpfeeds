@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use TheWPFeeds\License\LicenseClient;
-use TheWPFeeds\License\RemoteLicense;
+use FreshetFeeds\License\LicenseClient;
+use FreshetFeeds\License\RemoteLicense;
 
 final class RemoteLicenseTest extends TestCase
 {
@@ -92,7 +92,7 @@ final class RemoteLicenseTest extends TestCase
     {
         $key = str_repeat('c', 32);
         $this->options[RemoteLicense::OPTION_KEY] = $key;
-        $this->transients['thewpfeeds_license_status'] = ['key' => $key, 'valid' => true];
+        $this->transients['freshet_feeds_license_status'] = ['key' => $key, 'valid' => true];
 
         Functions\expect('wp_remote_post')->never();
 
@@ -102,7 +102,7 @@ final class RemoteLicenseTest extends TestCase
     public function testCacheForDifferentKeyIsIgnored(): void
     {
         $this->options[RemoteLicense::OPTION_KEY] = str_repeat('d', 32);
-        $this->transients['thewpfeeds_license_status'] = ['key' => 'old-key', 'valid' => true];
+        $this->transients['freshet_feeds_license_status'] = ['key' => 'old-key', 'valid' => true];
         $this->serverResponds(['success' => true, 'data' => ['valid' => false]]);
 
         $this->assertFalse($this->license()->isPro());
@@ -120,20 +120,20 @@ final class RemoteLicenseTest extends TestCase
     {
         $this->options[RemoteLicense::OPTION_KEY] = str_repeat('e', 32);
         // Last successful validation: yesterday — inside the 7-day grace.
-        $this->options['thewpfeeds_license_last_ok'] = time() - DAY_IN_SECONDS;
+        $this->options['freshet_feeds_license_last_ok'] = time() - DAY_IN_SECONDS;
         $this->serverUnreachable();
 
         $license = $this->license();
 
         $this->assertTrue($license->isPro(), 'A license-server outage must not downgrade a paying site');
-        $this->assertTrue((bool) $this->transients['thewpfeeds_license_status']['valid'], 'Fail-open result is cached for one interval');
+        $this->assertTrue((bool) $this->transients['freshet_feeds_license_status']['valid'], 'Fail-open result is cached for one interval');
     }
 
     public function testFailOpenExpiresAfterGraceWindow(): void
     {
         $this->options[RemoteLicense::OPTION_KEY] = str_repeat('f', 32);
         // Last successful validation: 8 days ago — outside the 7-day grace.
-        $this->options['thewpfeeds_license_last_ok'] = time() - 8 * DAY_IN_SECONDS;
+        $this->options['freshet_feeds_license_last_ok'] = time() - 8 * DAY_IN_SECONDS;
         $this->serverUnreachable();
 
         $this->assertFalse($this->license()->isPro(), 'Blocking the license server must not be a permanent Pro unlock');
@@ -159,6 +159,6 @@ final class RemoteLicenseTest extends TestCase
         });
 
         $this->assertTrue($this->license()->isPro());
-        $this->assertGreaterThan(0, (int) ($this->options['thewpfeeds_license_last_ok'] ?? 0));
+        $this->assertGreaterThan(0, (int) ($this->options['freshet_feeds_license_last_ok'] ?? 0));
     }
 }

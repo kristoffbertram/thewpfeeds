@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
-use TheWPFeeds\Provider\Rss\RssNormalizer;
+use FreshetFeeds\Provider\Rss\RssNormalizer;
 
 final class RssNormalizerTest extends TestCase
 {
@@ -19,7 +19,7 @@ final class RssNormalizerTest extends TestCase
     public function testRss2Fixture(): void
     {
         $items = $this->normalizer->normalize(
-            (string) file_get_contents(THEWPFEEDS_FIXTURES_DIR . '/rss2-sample.xml')
+            (string) file_get_contents(FRESHET_FEEDS_FIXTURES_DIR . '/rss2-sample.xml')
         );
 
         $this->assertCount(3, $items);
@@ -44,7 +44,7 @@ final class RssNormalizerTest extends TestCase
     public function testYouTubeAtomFixture(): void
     {
         $items = $this->normalizer->normalize(
-            (string) file_get_contents(THEWPFEEDS_FIXTURES_DIR . '/atom-youtube.xml'),
+            (string) file_get_contents(FRESHET_FEEDS_FIXTURES_DIR . '/atom-youtube.xml'),
             'youtube'
         );
 
@@ -66,7 +66,7 @@ final class RssNormalizerTest extends TestCase
     public function testDistinctIdsAndStableHashing(): void
     {
         $items = $this->normalizer->normalize(
-            (string) file_get_contents(THEWPFEEDS_FIXTURES_DIR . '/rss2-sample.xml')
+            (string) file_get_contents(FRESHET_FEEDS_FIXTURES_DIR . '/rss2-sample.xml')
         );
 
         $ids = array_map(static fn ($i) => $i->id, $items);

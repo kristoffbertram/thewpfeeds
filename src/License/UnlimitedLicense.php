@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\License;
+namespace FreshetFeeds\License;
 
 /**
  * The wordpress.org build: fully functional, unlimited feeds, no license

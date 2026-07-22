@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use TheWPFeeds\Template\TemplateLoader;
+use FreshetFeeds\Template\TemplateLoader;
 
 final class TemplateLoaderTest extends TestCase
 {
@@ -16,9 +16,9 @@ final class TemplateLoaderTest extends TestCase
     {
         parent::setUp();
 
-        $base = sys_get_temp_dir() . '/thewpfeeds-test-' . uniqid();
+        $base = sys_get_temp_dir() . '/freshet-feeds-test-' . uniqid();
         $this->pluginDir = $base . '/plugin-templates';
-        $this->themeDir = $base . '/theme/thewpfeeds';
+        $this->themeDir = $base . '/theme/freshet-feeds';
         mkdir($this->pluginDir, 0777, true);
         mkdir($this->themeDir, 0777, true);
 

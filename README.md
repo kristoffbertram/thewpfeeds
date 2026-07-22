@@ -1,4 +1,4 @@
-# The WP Feeds
+# Freshet Feeds
 
 Developer-first external feeds for WordPress. LinkedIn company-page posts first; every provider feeds the same normalized item model and the same theme-overridable templates, so styling a feed is exactly like styling any other WordPress loop.
 
@@ -8,7 +8,7 @@ Feed plugins render fixed markup you style through *their* settings UI. This plu
 
 ```php
 // Anywhere in your theme:
-foreach ( thewpfeeds( 'linkedin-main' ) as $item ) {
+foreach ( freshet_feeds( 'linkedin-main' ) as $item ) {
     printf(
         '<article><h3>%s</h3><time>%s</time><p>%s</p></article>',
         esc_html( $item->title( 'Untitled' ) ),
@@ -18,12 +18,12 @@ foreach ( thewpfeeds( 'linkedin-main' ) as $item ) {
 }
 
 // Or render through the template chain:
-thewpfeeds_render( 'linkedin-main', [ 'layout' => 'grid' ] );
+freshet_feeds_render( 'linkedin-main', [ 'layout' => 'grid' ] );
 ```
 
 ## Templating
 
-WooCommerce-style overrides. Copy any file from `templates/` into `{your-theme}/thewpfeeds/` and edit:
+WooCommerce-style overrides. Copy any file from `templates/` into `{your-theme}/freshet-feeds/` and edit:
 
 | Template | Overrides |
 |---|---|
@@ -32,7 +32,7 @@ WooCommerce-style overrides. Copy any file from `templates/` into `{your-theme}/
 | `feed.php` | Outer wrapper |
 | `empty.php` | No-items state (error details shown to admins only) |
 
-Custom layouts: add `{your-theme}/thewpfeeds/layout-carousel.php` and pass `layout => 'carousel'` — no plugin changes needed.
+Custom layouts: add `{your-theme}/freshet-feeds/layout-carousel.php` and pass `layout => 'carousel'` — no plugin changes needed.
 
 Every item exposes: `title($fallback)`, `date($format)`, `datetime()`, `content()`, `excerpt($words)`, `url()`, `hasImage()`, `image()`, `imageTag($attrs)`, `author()`, and `raw()` (the untouched provider payload). Getters return raw values — escape in your templates.
 
@@ -43,7 +43,7 @@ Manage feeds under **Feeds** in wp-admin. v1 providers:
 - **LinkedIn (company page)** — bring-your-own LinkedIn developer app with Community Management API access; OAuth connect under Feeds → LinkedIn connections. Posts are fetched via cron (stale-while-revalidate — pages never block on LinkedIn) and images are copied locally because LinkedIn image URLs expire.
 - **Mock (fixture data)** — realistic LinkedIn-shaped data with zero credentials; available outside production for building templates. 
 
-Third-party providers plug in via the `thewpfeeds_register_providers` action.
+Third-party providers plug in via the `freshet_feeds_register_providers` action.
 
 Free version: 1 feed. Pro: unlimited.
 
@@ -64,6 +64,6 @@ Local WordPress via Herd: symlink this directory into a site's `wp-content/plugi
 Pipeline smoke test:
 
 ```bash
-wp thewpfeeds fetch <feed-slug> --force
-wp thewpfeeds status
+wp freshet-feeds fetch <feed-slug> --force
+wp freshet-feeds status
 ```

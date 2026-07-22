@@ -2,35 +2,35 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds;
+namespace FreshetFeeds;
 
-use TheWPFeeds\Admin\FeedsPage;
-use TheWPFeeds\Admin\OAuthController;
-use TheWPFeeds\Auth\LinkedInOAuth;
-use TheWPFeeds\Blocks\FeedBlock;
-use TheWPFeeds\Cache\ImageStore;
-use TheWPFeeds\Cache\ItemCache;
-use TheWPFeeds\Cli\FetchCommand;
-use TheWPFeeds\Connection\ConnectionRepository;
-use TheWPFeeds\Connection\TokenStore;
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Feed\FeedRepository;
-use TheWPFeeds\Fetch\Cron;
-use TheWPFeeds\Fetch\FeedRunner;
-use TheWPFeeds\Fetch\FetchLock;
-use TheWPFeeds\Admin\LicenseSection;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\License\LicenseClient;
-use TheWPFeeds\License\LicenseInterface;
-use TheWPFeeds\License\RemoteLicense;
-use TheWPFeeds\License\UpdateChecker;
-use TheWPFeeds\Provider\LinkedIn\ByoLinkedInClient;
-use TheWPFeeds\Provider\LinkedIn\LinkedInProvider;
-use TheWPFeeds\Provider\LinkedIn\PostNormalizer;
-use TheWPFeeds\Provider\MockProvider;
-use TheWPFeeds\Provider\ProviderRegistry;
-use TheWPFeeds\Rest\FeedsController;
-use TheWPFeeds\Template\TemplateLoader;
+use FreshetFeeds\Admin\FeedsPage;
+use FreshetFeeds\Admin\OAuthController;
+use FreshetFeeds\Auth\LinkedInOAuth;
+use FreshetFeeds\Blocks\FeedBlock;
+use FreshetFeeds\Cache\ImageStore;
+use FreshetFeeds\Cache\ItemCache;
+use FreshetFeeds\Cli\FetchCommand;
+use FreshetFeeds\Connection\ConnectionRepository;
+use FreshetFeeds\Connection\TokenStore;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Feed\FeedRepository;
+use FreshetFeeds\Fetch\Cron;
+use FreshetFeeds\Fetch\FeedRunner;
+use FreshetFeeds\Fetch\FetchLock;
+use FreshetFeeds\Admin\LicenseSection;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\License\LicenseClient;
+use FreshetFeeds\License\LicenseInterface;
+use FreshetFeeds\License\RemoteLicense;
+use FreshetFeeds\License\UpdateChecker;
+use FreshetFeeds\Provider\LinkedIn\ByoLinkedInClient;
+use FreshetFeeds\Provider\LinkedIn\LinkedInProvider;
+use FreshetFeeds\Provider\LinkedIn\PostNormalizer;
+use FreshetFeeds\Provider\MockProvider;
+use FreshetFeeds\Provider\ProviderRegistry;
+use FreshetFeeds\Rest\FeedsController;
+use FreshetFeeds\Template\TemplateLoader;
 
 final class Plugin
 {
@@ -62,7 +62,7 @@ final class Plugin
         // (Guideline 5: no locked features) — everything is unlimited there.
         // Direct-sold builds keep it: RemoteLicense behaves as the free tier
         // (1 feed) until a key validates against the license server.
-        $hasLicenseStack = is_readable(THEWPFEEDS_DIR . 'src/License/RemoteLicense.php');
+        $hasLicenseStack = is_readable(FRESHET_FEEDS_DIR . 'src/License/RemoteLicense.php');
         $licenseClient = $hasLicenseStack ? new LicenseClient() : null;
 
         /**
@@ -71,8 +71,8 @@ final class Plugin
          * @param LicenseInterface $license
          */
         $this->license = apply_filters(
-            'thewpfeeds_license',
-            $hasLicenseStack ? new RemoteLicense($licenseClient) : new \TheWPFeeds\License\UnlimitedLicense()
+            'freshet_feeds_license',
+            $hasLicenseStack ? new RemoteLicense($licenseClient) : new \FreshetFeeds\License\UnlimitedLicense()
         );
 
         $this->feeds = new FeedRepository($this->license);
@@ -82,7 +82,7 @@ final class Plugin
         $this->oauth = new LinkedInOAuth($this->connections);
         $this->runner = new FeedRunner($this->providers, $this->cache, new ImageStore(), new FetchLock());
         $this->cron = new Cron($this->feeds, $this->cache, $this->runner);
-        $this->templates = new TemplateLoader(THEWPFEEDS_DIR . 'templates');
+        $this->templates = new TemplateLoader(FRESHET_FEEDS_DIR . 'templates');
 
         add_action('init', [$this, 'onInit']);
         add_action('rest_api_init', fn () => (new FeedsController($this->feeds))->registerRoutes());
@@ -98,12 +98,12 @@ final class Plugin
         // present in direct-sold builds where it is opt-in via constant/filter.
         // File check (not class_exists): the optimized classmap in release
         // builds would emit a warning autoloading a stripped file.
-        if ($licenseClient !== null && is_readable(THEWPFEEDS_DIR . 'src/License/UpdateChecker.php')) {
+        if ($licenseClient !== null && is_readable(FRESHET_FEEDS_DIR . 'src/License/UpdateChecker.php')) {
             (new UpdateChecker($licenseClient))->hooks();
         }
 
         if (defined('WP_CLI') && WP_CLI) {
-            \WP_CLI::add_command('thewpfeeds', new FetchCommand($this->feeds, $this->runner, $this->cache));
+            \WP_CLI::add_command('freshet-feeds', new FetchCommand($this->feeds, $this->runner, $this->cache));
         }
     }
 
@@ -117,7 +117,7 @@ final class Plugin
     private function registerProviders(): void
     {
         $normalizer = new PostNormalizer();
-        $rssNormalizer = new \TheWPFeeds\Provider\Rss\RssNormalizer();
+        $rssNormalizer = new \FreshetFeeds\Provider\Rss\RssNormalizer();
 
         $this->providers->register(new LinkedInProvider(
             new ByoLinkedInClient($this->connections),
@@ -125,15 +125,15 @@ final class Plugin
             $this->connections,
         ));
 
-        $this->providers->register(new \TheWPFeeds\Provider\Rss\RssProvider($rssNormalizer));
-        $this->providers->register(new \TheWPFeeds\Provider\YouTube\YouTubeProvider($rssNormalizer));
-        $this->providers->register(new \TheWPFeeds\Provider\Bluesky\BlueskyProvider(
-            new \TheWPFeeds\Provider\Bluesky\BlueskyNormalizer(),
+        $this->providers->register(new \FreshetFeeds\Provider\Rss\RssProvider($rssNormalizer));
+        $this->providers->register(new \FreshetFeeds\Provider\YouTube\YouTubeProvider($rssNormalizer));
+        $this->providers->register(new \FreshetFeeds\Provider\Bluesky\BlueskyProvider(
+            new \FreshetFeeds\Provider\Bluesky\BlueskyNormalizer(),
         ));
 
         $this->providers->register(new MockProvider(
             $normalizer,
-            THEWPFEEDS_DIR . 'data/fixtures/linkedin-posts.json',
+            FRESHET_FEEDS_DIR . 'data/fixtures/linkedin-posts.json',
         ));
 
         /**
@@ -141,7 +141,7 @@ final class Plugin
          *
          * @param ProviderRegistry $registry
          */
-        do_action('thewpfeeds_register_providers', $this->providers);
+        do_action('freshet_feeds_register_providers', $this->providers);
     }
 
     /**
@@ -178,7 +178,7 @@ final class Plugin
         if ($feed === null) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 printf(
-                    '<!-- thewpfeeds: unknown feed "%s" -->',
+                    '<!-- freshet-feeds: unknown feed "%s" -->',
                     esc_html($feedSlug)
                 );
             }

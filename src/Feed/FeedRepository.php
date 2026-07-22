@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Feed;
+namespace FreshetFeeds\Feed;
 
 use RuntimeException;
-use TheWPFeeds\License\LicenseInterface;
+use FreshetFeeds\License\LicenseInterface;
 use WP_Post;
 
 /**
- * Maps Feed value objects onto the (non-public) thewpfeeds_feed CPT.
+ * Maps Feed value objects onto the (non-public) freshet_feeds_feed CPT.
  * Config lives in one meta blob; item cache meta lives alongside (see ItemCache).
  */
 final class FeedRepository
 {
-    public const POST_TYPE = 'thewpfeeds_feed';
-    private const META_CONFIG = '_thewpfeeds_config';
+    public const POST_TYPE = 'freshet_feeds_feed';
+    private const META_CONFIG = '_freshet_feeds_config';
 
     public function __construct(private readonly LicenseInterface $license)
     {
@@ -24,7 +24,7 @@ final class FeedRepository
     public static function registerPostType(): void
     {
         register_post_type(self::POST_TYPE, [
-            'label' => __('Feeds', 'thewpfeeds'),
+            'label' => __('Feeds', 'freshet-feeds'),
             'public' => false,
             'show_ui' => false,
             'show_in_rest' => false,
@@ -79,7 +79,7 @@ final class FeedRepository
         $isNew = $feed->id === 0;
 
         if ($isNew && !$this->license->canCreateFeed($this->countBillable())) {
-            throw new RuntimeException(esc_html__('Feed limit reached. Upgrade to The WP Feeds Pro for unlimited feeds.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('Feed limit reached. Upgrade to Freshet Feeds Pro for unlimited feeds.', 'freshet-feeds'));
         }
 
         $postData = [
@@ -113,7 +113,7 @@ final class FeedRepository
         $saved = $this->find($id);
 
         if ($saved === null) {
-            throw new RuntimeException(esc_html__('Feed could not be saved.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('Feed could not be saved.', 'freshet-feeds'));
         }
 
         return $saved;

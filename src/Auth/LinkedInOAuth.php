@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Auth;
+namespace FreshetFeeds\Auth;
 
 use RuntimeException;
-use TheWPFeeds\Connection\ConnectionRepository;
-use TheWPFeeds\Connection\LinkedInConnection;
+use FreshetFeeds\Connection\ConnectionRepository;
+use FreshetFeeds\Connection\LinkedInConnection;
 
 /**
  * LinkedIn OAuth 2.0 authorization-code flow for bring-your-own-app connections.
- * The redirect URI (admin-post.php?action=thewpfeeds_oauth_callback) must be
+ * The redirect URI (admin-post.php?action=freshet_feeds_oauth_callback) must be
  * registered verbatim in the LinkedIn developer app.
  */
 final class LinkedInOAuth
@@ -18,7 +18,7 @@ final class LinkedInOAuth
     private const AUTHORIZE_URL = 'https://www.linkedin.com/oauth/v2/authorization';
     private const TOKEN_URL = 'https://www.linkedin.com/oauth/v2/accessToken';
     private const SCOPES = 'r_organization_social rw_organization_admin';
-    private const STATE_TRANSIENT = 'thewpfeeds_oauth_state';
+    private const STATE_TRANSIENT = 'freshet_feeds_oauth_state';
 
     /** Per-user key so two admins connecting concurrently don't clobber each other. */
     private static function stateKey(): string
@@ -32,7 +32,7 @@ final class LinkedInOAuth
 
     public static function redirectUri(): string
     {
-        return admin_url('admin-post.php?action=thewpfeeds_oauth_callback');
+        return admin_url('admin-post.php?action=freshet_feeds_oauth_callback');
     }
 
     /** Build the LinkedIn consent URL for a connection and remember the state nonce. */
@@ -65,13 +65,13 @@ final class LinkedInOAuth
         delete_transient(self::stateKey());
 
         if (!is_array($expected) || !hash_equals((string) $expected['state'], $state)) {
-            throw new RuntimeException(esc_html__('OAuth state mismatch — please retry the connection.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('OAuth state mismatch — please retry the connection.', 'freshet-feeds'));
         }
 
         $connection = $this->connections->find((string) $expected['connection_id']);
 
         if ($connection === null) {
-            throw new RuntimeException(esc_html__('Unknown connection.', 'thewpfeeds'));
+            throw new RuntimeException(esc_html__('Unknown connection.', 'freshet-feeds'));
         }
 
         $secrets = $this->connections->tokens()->get($connection->id);

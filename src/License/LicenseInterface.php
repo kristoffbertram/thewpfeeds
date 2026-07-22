@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\License;
+namespace FreshetFeeds\License;
 
 interface LicenseInterface
 {

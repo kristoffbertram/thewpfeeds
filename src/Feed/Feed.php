@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Feed;
+namespace FreshetFeeds\Feed;
 
 final readonly class Feed
 {

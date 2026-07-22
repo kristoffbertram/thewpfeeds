@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Provider\LinkedIn\PostNormalizer;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Provider\LinkedIn\PostNormalizer;
 
 final class PostNormalizerTest extends TestCase
 {
@@ -19,7 +19,7 @@ final class PostNormalizerTest extends TestCase
         parent::setUp();
         $this->normalizer = new PostNormalizer();
         $this->fixture = json_decode(
-            (string) file_get_contents(THEWPFEEDS_FIXTURES_DIR . '/linkedin-posts.json'),
+            (string) file_get_contents(FRESHET_FEEDS_FIXTURES_DIR . '/linkedin-posts.json'),
             true
         );
     }
@@ -41,7 +41,7 @@ final class PostNormalizerTest extends TestCase
         $this->assertStringNotContainsString('{hashtag', $item->content);
         $this->assertSame(1751364000, $item->date->getTimestamp());
         $this->assertNotNull($item->image);
-        $this->assertSame('https://picsum.photos/seed/thewpfeeds-1/1200/675', $item->image->remoteUrl);
+        $this->assertSame('https://picsum.photos/seed/freshet-feeds-1/1200/675', $item->image->remoteUrl);
         $this->assertSame('Bags of coffee on a roastery workbench at dawn', $item->image->alt);
         $this->assertSame(1200, $item->image->width);
         $this->assertSame($post, $item->raw, 'Raw payload preserved as escape hatch');
@@ -56,7 +56,7 @@ final class PostNormalizerTest extends TestCase
         $this->assertStringContainsString('Brew Weekly', $item->content);
         $this->assertStringNotContainsString('@[', $item->content, 'Mentions unwrapped to plain names');
         $this->assertNotNull($item->image);
-        $this->assertSame('https://picsum.photos/seed/thewpfeeds-2/1200/627', $item->image->remoteUrl);
+        $this->assertSame('https://picsum.photos/seed/freshet-feeds-2/1200/627', $item->image->remoteUrl);
     }
 
     public function testMultiImagePostUsesFirstImageAndUnescapesCommentary(): void
@@ -65,7 +65,7 @@ final class PostNormalizerTest extends TestCase
         $item = $this->normalizer->normalize($post, $this->fixture['_images']);
 
         $this->assertNotNull($item->image);
-        $this->assertSame('https://picsum.photos/seed/thewpfeeds-3/1200/675', $item->image->remoteUrl);
+        $this->assertSame('https://picsum.photos/seed/freshet-feeds-3/1200/675', $item->image->remoteUrl);
         $this->assertStringContainsString('(part 3)', $item->content, 'Escaped parens unescaped');
         $this->assertStringContainsString('"roast is a craft"', $item->content);
     }

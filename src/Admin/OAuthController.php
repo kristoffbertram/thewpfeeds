@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Admin;
+namespace FreshetFeeds\Admin;
 
-use TheWPFeeds\Auth\LinkedInOAuth;
+use FreshetFeeds\Auth\LinkedInOAuth;
 use Throwable;
 
 /**
@@ -18,23 +18,23 @@ final class OAuthController
 
     public function hooks(): void
     {
-        add_action('admin_post_thewpfeeds_oauth_start', [$this, 'start']);
-        add_action('admin_post_thewpfeeds_oauth_callback', [$this, 'callback']);
+        add_action('admin_post_freshet_feeds_oauth_start', [$this, 'start']);
+        add_action('admin_post_freshet_feeds_oauth_callback', [$this, 'callback']);
     }
 
     public function start(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You are not allowed to manage feed connections.', 'thewpfeeds'));
+            wp_die(esc_html__('You are not allowed to manage feed connections.', 'freshet-feeds'));
         }
 
-        check_admin_referer('thewpfeeds_oauth_start');
+        check_admin_referer('freshet_feeds_oauth_start');
 
         $connectionId = sanitize_key(wp_unslash($_GET['connection'] ?? ''));
-        $connection = \TheWPFeeds\Plugin::instance()->connections()->find($connectionId);
+        $connection = \FreshetFeeds\Plugin::instance()->connections()->find($connectionId);
 
         if ($connection === null) {
-            wp_die(esc_html__('Unknown connection.', 'thewpfeeds'));
+            wp_die(esc_html__('Unknown connection.', 'freshet-feeds'));
         }
 
         // Manual redirect: LinkedIn requires the redirect_uri to be double-checked,
@@ -47,7 +47,7 @@ final class OAuthController
     public function callback(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You are not allowed to manage feed connections.', 'thewpfeeds'));
+            wp_die(esc_html__('You are not allowed to manage feed connections.', 'freshet-feeds'));
         }
 
         $code = sanitize_text_field(wp_unslash($_GET['code'] ?? ''));
@@ -55,7 +55,7 @@ final class OAuthController
         $error = sanitize_text_field(wp_unslash($_GET['error_description'] ?? $_GET['error'] ?? ''));
 
         if ($error !== '' || $code === '') {
-            $this->redirectWithNotice('error', $error !== '' ? $error : __('LinkedIn returned no authorization code.', 'thewpfeeds'));
+            $this->redirectWithNotice('error', $error !== '' ? $error : __('LinkedIn returned no authorization code.', 'freshet-feeds'));
         }
 
         try {
@@ -71,8 +71,8 @@ final class OAuthController
         wp_safe_redirect(add_query_arg([
             'page' => FeedsPage::SLUG,
             'tab' => 'connections',
-            'thewpfeeds_notice' => $type,
-            'thewpfeeds_message' => rawurlencode($message),
+            'freshet_feeds_notice' => $type,
+            'freshet_feeds_message' => rawurlencode($message),
         ], admin_url('admin.php')));
 
         exit;

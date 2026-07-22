@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider;
+namespace FreshetFeeds\Provider;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Provider\LinkedIn\PostNormalizer;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Provider\LinkedIn\PostNormalizer;
 
 /**
  * Fixture-backed provider for development and template work: runs a real-shaped
@@ -29,7 +29,7 @@ final class MockProvider implements ProviderInterface
 
     public function label(): string
     {
-        return __('Mock (fixture data)', 'thewpfeeds');
+        return __('Mock (fixture data)', 'freshet-feeds');
     }
 
     public function fetch(Feed $feed): ItemCollection

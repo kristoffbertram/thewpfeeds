@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Item;
+namespace FreshetFeeds\Item;
 
 final readonly class ItemImage
 {

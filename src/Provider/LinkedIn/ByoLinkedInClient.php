@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\LinkedIn;
+namespace FreshetFeeds\Provider\LinkedIn;
 
-use TheWPFeeds\Auth\LinkedInOAuth;
-use TheWPFeeds\Connection\ConnectionRepository;
-use TheWPFeeds\Connection\LinkedInConnection;
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Provider\FetchException;
+use FreshetFeeds\Auth\LinkedInOAuth;
+use FreshetFeeds\Connection\ConnectionRepository;
+use FreshetFeeds\Connection\LinkedInConnection;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Provider\FetchException;
 use Throwable;
 
 /**
@@ -21,7 +21,7 @@ final class ByoLinkedInClient implements LinkedInClientInterface
 
     /**
      * LinkedIn sunsets API versions; bump per release, filterable as an escape
-     * hatch via `thewpfeeds_linkedin_version`.
+     * hatch via `freshet_feeds_linkedin_version`.
      */
     public const API_VERSION = '202506';
 
@@ -94,7 +94,7 @@ final class ByoLinkedInClient implements LinkedInClientInterface
         }
 
         /** This filter exists because LinkedIn sunsets API versions. */
-        $version = (string) apply_filters('thewpfeeds_linkedin_version', self::API_VERSION);
+        $version = (string) apply_filters('freshet_feeds_linkedin_version', self::API_VERSION);
 
         $response = wp_remote_get($url, [
             'timeout' => 15,

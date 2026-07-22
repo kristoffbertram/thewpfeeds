@@ -1,13 +1,13 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
-    "name": "thewpfeeds/feed",
+    "name": "freshet-feeds/feed",
     "title": "Feed",
     "category": "widgets",
     "icon": "rss",
-    "description": "Display an external feed (LinkedIn, ...) using The WP Feeds templates.",
+    "description": "Display an external feed (LinkedIn, ...) using Freshet Feeds templates.",
     "keywords": ["feed", "linkedin", "social"],
-    "textdomain": "thewpfeeds",
+    "textdomain": "freshet-feeds",
     "attributes": {
         "feedId": {
             "type": "integer",

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\License;
+namespace FreshetFeeds\License;
 
 /**
  * Injects pro plugin updates from the license server into WP's update system.
@@ -12,7 +12,7 @@ namespace TheWPFeeds\License;
  */
 final class UpdateChecker
 {
-    private const CACHE_KEY = 'thewpfeeds_update_manifest';
+    private const CACHE_KEY = 'freshet_feeds_update_manifest';
     private const CACHE_TTL = 6 * HOUR_IN_SECONDS;
 
     public function __construct(private readonly LicenseClient $client)
@@ -23,7 +23,7 @@ final class UpdateChecker
     {
         // wp.org guideline 8: directory-hosted plugins update via wordpress.org
         // only. Direct updates are opt-in for installs distributed outside the
-        // directory (define THEWPFEEDS_DIRECT_UPDATES or use the filter).
+        // directory (define FRESHET_FEEDS_DIRECT_UPDATES or use the filter).
         if (!$this->directUpdatesEnabled()) {
             return;
         }
@@ -34,7 +34,7 @@ final class UpdateChecker
 
     private function directUpdatesEnabled(): bool
     {
-        $default = defined('THEWPFEEDS_DIRECT_UPDATES') && THEWPFEEDS_DIRECT_UPDATES;
+        $default = defined('FRESHET_FEEDS_DIRECT_UPDATES') && FRESHET_FEEDS_DIRECT_UPDATES;
 
         /**
          * Enable update delivery from the license server instead of wordpress.org.
@@ -42,7 +42,7 @@ final class UpdateChecker
          *
          * @param bool $enabled
          */
-        return (bool) apply_filters('thewpfeeds_direct_updates', $default);
+        return (bool) apply_filters('freshet_feeds_direct_updates', $default);
     }
 
     public function injectUpdate(mixed $transient): mixed
@@ -57,19 +57,19 @@ final class UpdateChecker
             return $transient;
         }
 
-        $basename = plugin_basename(THEWPFEEDS_FILE);
+        $basename = plugin_basename(FRESHET_FEEDS_FILE);
 
         if (
             isset($manifest['latest_version'], $manifest['download_url'])
-            && version_compare((string) $manifest['latest_version'], THEWPFEEDS_VERSION, '>')
+            && version_compare((string) $manifest['latest_version'], FRESHET_FEEDS_VERSION, '>')
         ) {
             $transient->response ??= [];
             $transient->response[$basename] = (object) [
-                'slug' => 'thewpfeeds',
+                'slug' => 'freshet-feeds',
                 'plugin' => $basename,
                 'new_version' => (string) $manifest['latest_version'],
                 'package' => (string) $manifest['download_url'],
-                'url' => 'https://wp.kristoffbertram.be',
+                'url' => 'https://freshet.studio',
                 'requires' => $manifest['requires_wp'] ?? '',
                 'requires_php' => $manifest['requires_php'] ?? '',
                 'tested' => $manifest['tested'] ?? '',
@@ -93,7 +93,7 @@ final class UpdateChecker
             return $cached === [] ? null : $cached;
         }
 
-        $response = $this->client->updateCheck(THEWPFEEDS_VERSION, RemoteLicense::storedKey());
+        $response = $this->client->updateCheck(FRESHET_FEEDS_VERSION, RemoteLicense::storedKey());
 
         $manifest = ($response['success'] ?? false) && is_array($response['data'] ?? null)
             ? $response['data']

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\License;
+namespace FreshetFeeds\License;
 
 /**
  * The free tier: one feed. The future remote license client (EDD/LemonSqueezy)
- * replaces this via the `thewpfeeds_license` filter — no call sites change.
+ * replaces this via the `freshet_feeds_license` filter — no call sites change.
  */
 final class FreeLicense implements LicenseInterface
 {

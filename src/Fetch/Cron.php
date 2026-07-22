@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Fetch;
+namespace FreshetFeeds\Fetch;
 
-use TheWPFeeds\Cache\ItemCache;
-use TheWPFeeds\Feed\FeedRepository;
+use FreshetFeeds\Cache\ItemCache;
+use FreshetFeeds\Feed\FeedRepository;
 
 /**
  * Prefetch scheduling: a 15-minute sweep refreshes feeds past their TTL
@@ -13,9 +13,9 @@ use TheWPFeeds\Feed\FeedRepository;
  */
 final class Cron
 {
-    public const HOOK_REFRESH_ALL = 'thewpfeeds_refresh';
-    public const HOOK_REFRESH_ONE = 'thewpfeeds_refresh_feed';
-    private const SCHEDULE = 'thewpfeeds_15min';
+    public const HOOK_REFRESH_ALL = 'freshet_feeds_refresh';
+    public const HOOK_REFRESH_ONE = 'freshet_feeds_refresh_feed';
+    private const SCHEDULE = 'freshet_feeds_15min';
 
     public function __construct(
         private readonly FeedRepository $feeds,
@@ -40,7 +40,7 @@ final class Cron
     {
         $schedules[self::SCHEDULE] = [
             'interval' => 15 * MINUTE_IN_SECONDS,
-            'display' => __('Every 15 minutes (The WP Feeds)', 'thewpfeeds'),
+            'display' => __('Every 15 minutes (Freshet Feeds)', 'freshet-feeds'),
         ];
 
         return $schedules;

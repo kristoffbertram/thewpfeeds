@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Cli;
+namespace FreshetFeeds\Cli;
 
-use TheWPFeeds\Cache\ItemCache;
-use TheWPFeeds\Feed\FeedRepository;
-use TheWPFeeds\Fetch\FeedRunner;
+use FreshetFeeds\Cache\ItemCache;
+use FreshetFeeds\Feed\FeedRepository;
+use FreshetFeeds\Fetch\FeedRunner;
 use WP_CLI;
 
 /**
- * wp thewpfeeds fetch <feed-slug> [--force]
+ * wp freshet-feeds fetch <feed-slug> [--force]
  *
  * Smoke-tests the full pipeline (fetch → normalize → localize images → cache)
  * for any feed, mock or live.

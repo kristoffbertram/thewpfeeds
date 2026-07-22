@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\Rss;
+namespace FreshetFeeds\Provider\Rss;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Provider\FetchException;
-use TheWPFeeds\Provider\ProviderInterface;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Provider\FetchException;
+use FreshetFeeds\Provider\ProviderInterface;
 
 /**
  * Any RSS 2.0 or Atom feed. Also the escape hatch for platforms that expose
@@ -27,7 +27,7 @@ final class RssProvider implements ProviderInterface
 
     public function label(): string
     {
-        return __('RSS / Atom feed', 'thewpfeeds');
+        return __('RSS / Atom feed', 'freshet-feeds');
     }
 
     public function fetch(Feed $feed): ItemCollection
@@ -35,13 +35,13 @@ final class RssProvider implements ProviderInterface
         $url = (string) $feed->setting('feed_url', '');
 
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new FetchException(esc_html__('Feed URL is missing or invalid.', 'thewpfeeds'));
+            throw new FetchException(esc_html__('Feed URL is missing or invalid.', 'freshet-feeds'));
         }
 
         $response = wp_remote_get($url, [
             'timeout' => 15,
             'limit_response_size' => 2 * MB_IN_BYTES,
-            'user-agent' => 'TheWPFeeds/' . THEWPFEEDS_VERSION . '; ' . home_url(),
+            'user-agent' => 'FreshetFeeds/' . FRESHET_FEEDS_VERSION . '; ' . home_url(),
         ]);
 
         if (is_wp_error($response)) {
@@ -67,9 +67,9 @@ final class RssProvider implements ProviderInterface
     {
         return [
             'feed_url' => [
-                'label' => __('Feed URL', 'thewpfeeds'),
+                'label' => __('Feed URL', 'freshet-feeds'),
                 'type' => 'text',
-                'help' => __('Full URL of the RSS or Atom feed, e.g. https://example.com/feed/', 'thewpfeeds'),
+                'help' => __('Full URL of the RSS or Atom feed, e.g. https://example.com/feed/', 'freshet-feeds'),
                 'required' => true,
             ],
         ];

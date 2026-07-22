@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Admin;
+namespace FreshetFeeds\Admin;
 
-use TheWPFeeds\License\LicenseClient;
-use TheWPFeeds\License\LicenseInterface;
-use TheWPFeeds\License\RemoteLicense;
+use FreshetFeeds\License\LicenseClient;
+use FreshetFeeds\License\LicenseInterface;
+use FreshetFeeds\License\RemoteLicense;
 
 /**
  * License block on the Feeds admin page: enter key → activate; deactivate;
@@ -22,34 +22,34 @@ final class LicenseSection
 
     public function hooks(): void
     {
-        add_action('admin_post_thewpfeeds_activate_license', [$this, 'activate']);
-        add_action('admin_post_thewpfeeds_deactivate_license', [$this, 'deactivate']);
-        add_action('admin_post_thewpfeeds_save_data_settings', [$this, 'saveDataSettings']);
+        add_action('admin_post_freshet_feeds_activate_license', [$this, 'activate']);
+        add_action('admin_post_freshet_feeds_deactivate_license', [$this, 'deactivate']);
+        add_action('admin_post_freshet_feeds_save_data_settings', [$this, 'saveDataSettings']);
     }
 
     public function saveDataSettings(): void
     {
-        $this->authorize('thewpfeeds_save_data_settings');
+        $this->authorize('freshet_feeds_save_data_settings');
 
-        update_option('thewpfeeds_delete_data_on_uninstall', isset($_POST['delete_data']) ? 1 : 0, false);
+        update_option('freshet_feeds_delete_data_on_uninstall', isset($_POST['delete_data']) ? 1 : 0, false);
 
         $this->back('saved');
     }
 
     public function activate(): void
     {
-        $this->authorize('thewpfeeds_activate_license');
+        $this->authorize('freshet_feeds_activate_license');
 
         $key = sanitize_text_field(wp_unslash($_POST['license_key'] ?? ''));
 
         if ($key === '') {
-            $this->back('error', __('Enter a license key.', 'thewpfeeds'));
+            $this->back('error', __('Enter a license key.', 'freshet-feeds'));
         }
 
         $response = $this->client->activate($key, home_url());
 
         if (!($response['success'] ?? false)) {
-            $this->back('error', (string) ($response['error'] ?? __('Activation failed.', 'thewpfeeds')));
+            $this->back('error', (string) ($response['error'] ?? __('Activation failed.', 'freshet-feeds')));
         }
 
         update_option(RemoteLicense::OPTION_KEY, $key, false);
@@ -60,7 +60,7 @@ final class LicenseSection
 
     public function deactivate(): void
     {
-        $this->authorize('thewpfeeds_deactivate_license');
+        $this->authorize('freshet_feeds_deactivate_license');
 
         $key = RemoteLicense::storedKey();
 
@@ -80,28 +80,28 @@ final class LicenseSection
         $key = RemoteLicense::storedKey();
         $isPro = $this->license->isPro();
 
-        echo '<h2>' . esc_html__('License', 'thewpfeeds') . '</h2>';
+        echo '<h2>' . esc_html__('License', 'freshet-feeds') . '</h2>';
 
         if ($key !== '') {
             printf(
                 '<p>%s <code>%s…%s</code> — %s</p>',
-                esc_html__('Key:', 'thewpfeeds'),
+                esc_html__('Key:', 'freshet-feeds'),
                 esc_html(substr($key, 0, 6)),
                 esc_html(substr($key, -4)),
                 $isPro
-                    ? '<strong style="color:#00a32a;">' . esc_html__('Pro active — unlimited feeds', 'thewpfeeds') . '</strong>'
-                    : '<strong style="color:#b32d2e;">' . esc_html__('Invalid or expired — free tier (1 feed)', 'thewpfeeds') . '</strong>'
+                    ? '<strong style="color:#00a32a;">' . esc_html__('Pro active — unlimited feeds', 'freshet-feeds') . '</strong>'
+                    : '<strong style="color:#b32d2e;">' . esc_html__('Invalid or expired — free tier (1 feed)', 'freshet-feeds') . '</strong>'
             );
 
             $deactivateUrl = wp_nonce_url(
-                add_query_arg(['action' => 'thewpfeeds_deactivate_license'], admin_url('admin-post.php')),
-                'thewpfeeds_deactivate_license'
+                add_query_arg(['action' => 'freshet_feeds_deactivate_license'], admin_url('admin-post.php')),
+                'freshet_feeds_deactivate_license'
             );
 
             printf(
                 '<p><a href="%s" class="button">%s</a></p>',
                 esc_url($deactivateUrl),
-                esc_html__('Deactivate license on this site', 'thewpfeeds')
+                esc_html__('Deactivate license on this site', 'freshet-feeds')
             );
 
             $this->renderDataSettings();
@@ -112,19 +112,19 @@ final class LicenseSection
         echo '<p class="description">';
         printf(
             /* translators: %s: linked store URL */
-            esc_html__('The free version supports 1 feed. Get unlimited feeds with %s.', 'thewpfeeds'),
-            '<a href="https://wp.kristoffbertram.be" target="_blank" rel="noopener noreferrer">The WP Feeds Pro</a>'
+            esc_html__('The free version supports 1 feed. Get unlimited feeds with %s.', 'freshet-feeds'),
+            '<a href="https://freshet.studio" target="_blank" rel="noopener noreferrer">Freshet Feeds Pro</a>'
         );
         echo '</p>';
 
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" style="max-width:600px;">';
-        wp_nonce_field('thewpfeeds_activate_license');
-        echo '<input type="hidden" name="action" value="thewpfeeds_activate_license">';
+        wp_nonce_field('freshet_feeds_activate_license');
+        echo '<input type="hidden" name="action" value="freshet_feeds_activate_license">';
         printf(
             '<p><input type="text" name="license_key" class="regular-text" placeholder="%s" required> ',
-            esc_attr__('License key', 'thewpfeeds')
+            esc_attr__('License key', 'freshet-feeds')
         );
-        printf('<button type="submit" class="button button-primary">%s</button></p>', esc_html__('Activate', 'thewpfeeds'));
+        printf('<button type="submit" class="button button-primary">%s</button></p>', esc_html__('Activate', 'freshet-feeds'));
         echo '</form>';
 
         $this->renderDataSettings();
@@ -134,24 +134,24 @@ final class LicenseSection
     private function renderDataSettings(): void
     {
         echo '<hr style="margin:2em 0;">';
-        echo '<h2>' . esc_html__('Data', 'thewpfeeds') . '</h2>';
+        echo '<h2>' . esc_html__('Data', 'freshet-feeds') . '</h2>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
-        wp_nonce_field('thewpfeeds_save_data_settings');
-        echo '<input type="hidden" name="action" value="thewpfeeds_save_data_settings">';
+        wp_nonce_field('freshet_feeds_save_data_settings');
+        echo '<input type="hidden" name="action" value="freshet_feeds_save_data_settings">';
         printf(
             '<label><input type="checkbox" name="delete_data" value="1"%s> %s</label>',
-            checked((bool) get_option('thewpfeeds_delete_data_on_uninstall'), true, false),
-            esc_html__('Remove all feeds, cached items, and localized images when the plugin is uninstalled.', 'thewpfeeds')
+            checked((bool) get_option('freshet_feeds_delete_data_on_uninstall'), true, false),
+            esc_html__('Remove all feeds, cached items, and localized images when the plugin is uninstalled.', 'freshet-feeds')
         );
-        echo '<p class="description">' . esc_html__('Connection secrets and license data are always removed on uninstall, regardless of this setting.', 'thewpfeeds') . '</p>';
-        submit_button(__('Save', 'thewpfeeds'), 'secondary');
+        echo '<p class="description">' . esc_html__('Connection secrets and license data are always removed on uninstall, regardless of this setting.', 'freshet-feeds') . '</p>';
+        submit_button(__('Save', 'freshet-feeds'), 'secondary');
         echo '</form>';
     }
 
     private function authorize(string $nonceAction): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You are not allowed to manage the license.', 'thewpfeeds'));
+            wp_die(esc_html__('You are not allowed to manage the license.', 'freshet-feeds'));
         }
 
         check_admin_referer($nonceAction);
@@ -162,8 +162,8 @@ final class LicenseSection
         wp_safe_redirect(add_query_arg(array_filter([
             'page' => FeedsPage::SLUG,
             'tab' => 'license',
-            'thewpfeeds_notice' => $notice,
-            'thewpfeeds_message' => $message !== '' ? rawurlencode($message) : null,
+            'freshet_feeds_notice' => $notice,
+            'freshet_feeds_message' => $message !== '' ? rawurlencode($message) : null,
         ]), admin_url('admin.php')));
 
         exit;

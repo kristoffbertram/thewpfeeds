@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Admin;
+namespace FreshetFeeds\Admin;
 
-use TheWPFeeds\Auth\LinkedInOAuth;
-use TheWPFeeds\Cache\ItemCache;
-use TheWPFeeds\Connection\ConnectionRepository;
-use TheWPFeeds\Connection\LinkedInConnection;
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Feed\FeedRepository;
-use TheWPFeeds\Fetch\FeedRunner;
-use TheWPFeeds\License\LicenseInterface;
-use TheWPFeeds\Provider\ProviderRegistry;
+use FreshetFeeds\Auth\LinkedInOAuth;
+use FreshetFeeds\Cache\ItemCache;
+use FreshetFeeds\Connection\ConnectionRepository;
+use FreshetFeeds\Connection\LinkedInConnection;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Feed\FeedRepository;
+use FreshetFeeds\Fetch\FeedRunner;
+use FreshetFeeds\License\LicenseInterface;
+use FreshetFeeds\Provider\ProviderRegistry;
 use Throwable;
 
 /**
@@ -21,7 +21,7 @@ use Throwable;
  */
 final class FeedsPage
 {
-    public const SLUG = 'thewpfeeds';
+    public const SLUG = 'freshet-feeds';
     private const CAP = 'manage_options';
 
     public function __construct(
@@ -39,19 +39,19 @@ final class FeedsPage
     {
         add_action('admin_menu', [$this, 'registerMenu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminStyle']);
-        add_action('admin_post_thewpfeeds_save_feed', [$this, 'saveFeed']);
-        add_action('admin_post_thewpfeeds_delete_feed', [$this, 'deleteFeed']);
-        add_action('admin_post_thewpfeeds_refresh_feed', [$this, 'refreshFeed']);
-        add_action('admin_post_thewpfeeds_save_connection', [$this, 'saveConnection']);
-        add_action('admin_post_thewpfeeds_delete_connection', [$this, 'deleteConnection']);
+        add_action('admin_post_freshet_feeds_save_feed', [$this, 'saveFeed']);
+        add_action('admin_post_freshet_feeds_delete_feed', [$this, 'deleteFeed']);
+        add_action('admin_post_freshet_feeds_refresh_feed', [$this, 'refreshFeed']);
+        add_action('admin_post_freshet_feeds_save_connection', [$this, 'saveConnection']);
+        add_action('admin_post_freshet_feeds_delete_connection', [$this, 'deleteConnection']);
         add_action('admin_notices', [$this, 'renderNotice']);
     }
 
     public function registerMenu(): void
     {
         add_menu_page(
-            __('The WP Feeds', 'thewpfeeds'),
-            __('Feeds', 'thewpfeeds'),
+            __('Freshet Feeds', 'freshet-feeds'),
+            __('Feeds', 'freshet-feeds'),
             self::CAP,
             self::SLUG,
             [$this, 'renderPage'],
@@ -62,24 +62,24 @@ final class FeedsPage
 
     public function renderNotice(): void
     {
-        $type = sanitize_key(wp_unslash($_GET['thewpfeeds_notice'] ?? ''));
+        $type = sanitize_key(wp_unslash($_GET['freshet_feeds_notice'] ?? ''));
 
         if ($type === '' || !current_user_can(self::CAP)) {
             return;
         }
 
-        $message = sanitize_text_field(rawurldecode(wp_unslash($_GET['thewpfeeds_message'] ?? ''))); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended -- sanitized after decode; display-only notice.
+        $message = sanitize_text_field(rawurldecode(wp_unslash($_GET['freshet_feeds_message'] ?? ''))); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended -- sanitized after decode; display-only notice.
 
         [$class, $text] = match ($type) {
             'connected' => ['notice-success', sprintf(
                 /* translators: %s: connection label */
-                __('LinkedIn connection “%s” authorized.', 'thewpfeeds'),
+                __('LinkedIn connection “%s” authorized.', 'freshet-feeds'),
                 $message
             )],
-            'saved' => ['notice-success', __('Saved.', 'thewpfeeds')],
-            'deleted' => ['notice-success', __('Deleted.', 'thewpfeeds')],
-            'refreshed' => ['notice-success', __('Feed refreshed.', 'thewpfeeds')],
-            default => ['notice-error', $message !== '' ? $message : __('Something went wrong.', 'thewpfeeds')],
+            'saved' => ['notice-success', __('Saved.', 'freshet-feeds')],
+            'deleted' => ['notice-success', __('Deleted.', 'freshet-feeds')],
+            'refreshed' => ['notice-success', __('Feed refreshed.', 'freshet-feeds')],
+            default => ['notice-error', $message !== '' ? $message : __('Something went wrong.', 'freshet-feeds')],
         };
 
         printf('<div class="notice %s is-dismissible"><p>%s</p></div>', esc_attr($class), esc_html($text));
@@ -89,7 +89,7 @@ final class FeedsPage
 
     public function saveFeed(): void
     {
-        $this->authorize('thewpfeeds_save_feed');
+        $this->authorize('freshet_feeds_save_feed');
 
         $id = (int) ($_POST['feed_id'] ?? 0); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.Security.NonceVerification.Missing -- int cast sanitizes; nonce verified in authorize().
         $providerId = sanitize_key(wp_unslash($_POST['provider'] ?? 'mock'));
@@ -122,28 +122,28 @@ final class FeedsPage
 
     public function deleteFeed(): void
     {
-        $this->authorize('thewpfeeds_delete_feed');
+        $this->authorize('freshet_feeds_delete_feed');
 
         $id = (int) ($_GET['feed'] ?? 0);
-        (new \TheWPFeeds\Cache\ImageStore())->deleteForFeed($id);
+        (new \FreshetFeeds\Cache\ImageStore())->deleteForFeed($id);
         $this->feeds->delete($id);
         $this->back('deleted');
     }
 
     public function refreshFeed(): void
     {
-        $this->authorize('thewpfeeds_refresh_feed');
+        $this->authorize('freshet_feeds_refresh_feed');
 
         $feed = $this->feeds->find((int) ($_GET['feed'] ?? 0));
 
         if ($feed === null) {
-            $this->back('error', __('Unknown feed.', 'thewpfeeds'));
+            $this->back('error', __('Unknown feed.', 'freshet-feeds'));
         }
 
         $items = $this->runner->run($feed, force: true);
 
         if ($items === null) {
-            $this->back('error', $this->cache->lastError($feed) ?? __('Fetch failed.', 'thewpfeeds'));
+            $this->back('error', $this->cache->lastError($feed) ?? __('Fetch failed.', 'freshet-feeds'));
         }
 
         $this->back('refreshed');
@@ -151,7 +151,7 @@ final class FeedsPage
 
     public function saveConnection(): void
     {
-        $this->authorize('thewpfeeds_save_connection');
+        $this->authorize('freshet_feeds_save_connection');
 
         $id = sanitize_key(wp_unslash($_POST['connection_id'] ?? ''));
         $isNew = $id === '';
@@ -189,7 +189,7 @@ final class FeedsPage
 
     public function deleteConnection(): void
     {
-        $this->authorize('thewpfeeds_delete_connection');
+        $this->authorize('freshet_feeds_delete_connection');
 
         $this->connections->delete(sanitize_key(wp_unslash($_GET['connection'] ?? '')));
         $this->back('deleted', tab: 'connections');
@@ -247,55 +247,55 @@ final class FeedsPage
             return;
         }
 
-        wp_register_style('thewpfeeds-admin', false, [], THEWPFEEDS_VERSION);
-        wp_enqueue_style('thewpfeeds-admin');
-        wp_add_inline_style('thewpfeeds-admin', '
-            .twpf-header { background: #fff; border-bottom: 1px solid #dcdcde; margin: 0 0 0 -20px; padding: 16px 20px 0; }
-            .twpf-header__row { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; }
-            .twpf-header__mark { width: 28px; height: 28px; flex: none; }
-            .twpf-header__title { font-size: 16px; font-weight: 600; color: #1d2327; margin: 0; padding: 0; }
-            .twpf-header__version { font-size: 11px; color: #646970; background: #f0f0f1; border-radius: 10px; padding: 2px 8px; }
-            .twpf-header__meta { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 13px; }
-            .twpf-header__pill { border-radius: 12px; padding: 3px 10px; font-weight: 600; font-size: 12px; }
-            .twpf-header__pill--pro { background: #edfaef; color: #00832a; }
-            .twpf-header__pill--free { background: #f0f0f1; color: #50575e; }
-            .twpf-header .nav-tab-wrapper { border-bottom: 0; padding: 0; margin: 0; }
+        wp_register_style('freshet-feeds-admin', false, [], FRESHET_FEEDS_VERSION);
+        wp_enqueue_style('freshet-feeds-admin');
+        wp_add_inline_style('freshet-feeds-admin', '
+            .frst-header { background: #fff; border-bottom: 1px solid #dcdcde; margin: 0 0 0 -20px; padding: 16px 20px 0; }
+            .frst-header__row { display: flex; align-items: center; gap: 10px; padding-bottom: 14px; }
+            .frst-header__mark { width: 28px; height: 28px; flex: none; }
+            .frst-header__title { font-size: 16px; font-weight: 600; color: #1d2327; margin: 0; padding: 0; }
+            .frst-header__version { font-size: 11px; color: #646970; background: #f0f0f1; border-radius: 10px; padding: 2px 8px; }
+            .frst-header__meta { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 13px; }
+            .frst-header__pill { border-radius: 12px; padding: 3px 10px; font-weight: 600; font-size: 12px; }
+            .frst-header__pill--pro { background: #edfaef; color: #00832a; }
+            .frst-header__pill--free { background: #f0f0f1; color: #50575e; }
+            .frst-header .nav-tab-wrapper { border-bottom: 0; padding: 0; margin: 0; }
         ');
     }
 
     private function renderHeader(string $activeTab): void
     {
         $tabs = [
-            'feeds' => __('Feeds', 'thewpfeeds'),
-            'connections' => __('Connections', 'thewpfeeds'),
+            'feeds' => __('Feeds', 'freshet-feeds'),
+            'connections' => __('Connections', 'freshet-feeds'),
         ];
 
         if ($this->licenseSection !== null) {
-            $tabs['license'] = __('License', 'thewpfeeds');
+            $tabs['license'] = __('License', 'freshet-feeds');
         }
 
         ?>
-        <div class="twpf-header">
-            <div class="twpf-header__row">
-                <svg class="twpf-header__mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <div class="frst-header">
+            <div class="frst-header__row">
+                <svg class="frst-header__mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
                     <rect width="32" height="32" rx="7" fill="#1122ff"/>
                     <circle cx="10" cy="22" r="3" fill="#fff"/>
                     <path d="M7 13a12 12 0 0 1 12 12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
                     <path d="M7 6a19 19 0 0 1 19 19" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"/>
                 </svg>
-                <h1 class="twpf-header__title"><?php esc_html_e('The WP Feeds', 'thewpfeeds'); ?></h1>
-                <span class="twpf-header__version"><?php echo esc_html('v' . THEWPFEEDS_VERSION); ?></span>
-                <div class="twpf-header__meta">
+                <h1 class="frst-header__title"><?php esc_html_e('Freshet Feeds', 'freshet-feeds'); ?></h1>
+                <span class="frst-header__version"><?php echo esc_html('v' . FRESHET_FEEDS_VERSION); ?></span>
+                <div class="frst-header__meta">
                     <?php if ($this->licenseSection !== null) : ?>
                         <?php if ($this->license->isPro()) : ?>
-                            <span class="twpf-header__pill twpf-header__pill--pro"><?php esc_html_e('Pro', 'thewpfeeds'); ?></span>
+                            <span class="frst-header__pill frst-header__pill--pro"><?php esc_html_e('Pro', 'freshet-feeds'); ?></span>
                         <?php else : ?>
-                            <span class="twpf-header__pill twpf-header__pill--free"><?php esc_html_e('Free · 1 feed', 'thewpfeeds'); ?></span>
-                            <a href="https://wp.kristoffbertram.be" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Upgrade', 'thewpfeeds'); ?></a>
+                            <span class="frst-header__pill frst-header__pill--free"><?php esc_html_e('Free · 1 feed', 'freshet-feeds'); ?></span>
+                            <a href="https://freshet.studio" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Upgrade', 'freshet-feeds'); ?></a>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <a href="https://wp.kristoffbertram.be/docs" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Docs', 'thewpfeeds'); ?></a>
-                    <a href="mailto:plugins@kristoffbertram.be"><?php esc_html_e('Support', 'thewpfeeds'); ?></a>
+                    <a href="https://freshet.studio/docs" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Docs', 'freshet-feeds'); ?></a>
+                    <a href="mailto:plugins@kristoffbertram.be"><?php esc_html_e('Support', 'freshet-feeds'); ?></a>
                 </div>
             </div>
             <nav class="nav-tab-wrapper">
@@ -319,25 +319,25 @@ final class FeedsPage
             printf(
                 '<a href="%s" class="page-title-action">%s</a>',
                 esc_url(add_query_arg(['page' => self::SLUG, 'add' => 1], admin_url('admin.php'))),
-                esc_html__('Add feed', 'thewpfeeds')
+                esc_html__('Add feed', 'freshet-feeds')
             );
         } else {
             printf(
                 '<p><strong>%s</strong></p>',
-                esc_html__('Free version: 1 feed. Upgrade to Pro for unlimited feeds.', 'thewpfeeds')
+                esc_html__('Free version: 1 feed. Upgrade to Pro for unlimited feeds.', 'freshet-feeds')
             );
         }
 
         echo '<table class="widefat striped" style="margin-top:1em;"><thead><tr>';
 
-        foreach ([__('Name', 'thewpfeeds'), __('Slug', 'thewpfeeds'), __('Provider', 'thewpfeeds'), __('Last fetched', 'thewpfeeds'), __('Status', 'thewpfeeds'), ''] as $col) {
+        foreach ([__('Name', 'freshet-feeds'), __('Slug', 'freshet-feeds'), __('Provider', 'freshet-feeds'), __('Last fetched', 'freshet-feeds'), __('Status', 'freshet-feeds'), ''] as $col) {
             echo '<th>' . esc_html($col) . '</th>';
         }
 
         echo '</tr></thead><tbody>';
 
         if ($feeds === []) {
-            echo '<tr><td colspan="6">' . esc_html__('No feeds yet.', 'thewpfeeds') . '</td></tr>';
+            echo '<tr><td colspan="6">' . esc_html__('No feeds yet.', 'freshet-feeds') . '</td></tr>';
         }
 
         foreach ($feeds as $feed) {
@@ -346,12 +346,12 @@ final class FeedsPage
 
             $editUrl = add_query_arg(['page' => self::SLUG, 'edit' => $feed->id], admin_url('admin.php'));
             $refreshUrl = wp_nonce_url(
-                add_query_arg(['action' => 'thewpfeeds_refresh_feed', 'feed' => $feed->id], admin_url('admin-post.php')),
-                'thewpfeeds_refresh_feed'
+                add_query_arg(['action' => 'freshet_feeds_refresh_feed', 'feed' => $feed->id], admin_url('admin-post.php')),
+                'freshet_feeds_refresh_feed'
             );
             $deleteUrl = wp_nonce_url(
-                add_query_arg(['action' => 'thewpfeeds_delete_feed', 'feed' => $feed->id], admin_url('admin-post.php')),
-                'thewpfeeds_delete_feed'
+                add_query_arg(['action' => 'freshet_feeds_delete_feed', 'feed' => $feed->id], admin_url('admin-post.php')),
+                'freshet_feeds_delete_feed'
             );
 
             echo '<tr>';
@@ -359,20 +359,20 @@ final class FeedsPage
             echo '<td><code>' . esc_html($feed->slug) . '</code></td>';
             echo '<td>' . esc_html($this->providers->get($feed->providerId)?->label() ?? $feed->providerId) . '</td>';
             echo '<td>' . esc_html($fetchedAt > 0
-                ? sprintf(/* translators: %s: human time diff */ __('%s ago', 'thewpfeeds'), human_time_diff($fetchedAt))
-                : __('never', 'thewpfeeds')) . '</td>';
+                ? sprintf(/* translators: %s: human time diff */ __('%s ago', 'freshet-feeds'), human_time_diff($fetchedAt))
+                : __('never', 'freshet-feeds')) . '</td>';
             echo '<td>' . ($error !== null
                 ? '<span style="color:#b32d2e;">' . esc_html($error) . '</span>'
                 : '<span style="color:#00a32a;">OK</span>') . '</td>';
             printf(
                 '<td><a href="%s">%s</a> | <a href="%s">%s</a> | <a href="%s" onclick="return confirm(%s);">%s</a></td>',
                 esc_url($editUrl),
-                esc_html__('Edit', 'thewpfeeds'),
+                esc_html__('Edit', 'freshet-feeds'),
                 esc_url($refreshUrl),
-                esc_html__('Refresh', 'thewpfeeds'),
+                esc_html__('Refresh', 'freshet-feeds'),
                 esc_url($deleteUrl),
-                esc_attr(wp_json_encode(__('Delete this feed?', 'thewpfeeds'))),
-                esc_html__('Delete', 'thewpfeeds')
+                esc_attr(wp_json_encode(__('Delete this feed?', 'freshet-feeds'))),
+                esc_html__('Delete', 'freshet-feeds')
             );
             echo '</tr>';
         }
@@ -382,8 +382,8 @@ final class FeedsPage
         echo '<p style="margin-top:1em;color:#646970;">';
         printf(
             /* translators: %s: PHP code example */
-            esc_html__('Render a feed in your theme with %s or the “Feed” block.', 'thewpfeeds'),
-            '<code>thewpfeeds_render( \'feed-slug\' )</code>'
+            esc_html__('Render a feed in your theme with %s or the “Feed” block.', 'freshet-feeds'),
+            '<code>freshet_feeds_render( \'feed-slug\' )</code>'
         );
         echo '</p>';
     }
@@ -393,28 +393,28 @@ final class FeedsPage
         $isNew = $feed === null;
         $backUrl = add_query_arg(['page' => self::SLUG], admin_url('admin.php'));
 
-        echo '<h2>' . esc_html($isNew ? __('Add feed', 'thewpfeeds') : __('Edit feed', 'thewpfeeds')) . '</h2>';
+        echo '<h2>' . esc_html($isNew ? __('Add feed', 'freshet-feeds') : __('Edit feed', 'freshet-feeds')) . '</h2>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
-        wp_nonce_field('thewpfeeds_save_feed');
-        echo '<input type="hidden" name="action" value="thewpfeeds_save_feed">';
+        wp_nonce_field('freshet_feeds_save_feed');
+        echo '<input type="hidden" name="action" value="freshet_feeds_save_feed">';
         echo '<input type="hidden" name="feed_id" value="' . esc_attr((string) ($feed->id ?? 0)) . '">';
 
         echo '<table class="form-table" role="presentation">';
 
         $this->row(
-            __('Name', 'thewpfeeds'),
+            __('Name', 'freshet-feeds'),
             sprintf('<input type="text" name="name" class="regular-text" required value="%s">', esc_attr($feed->name ?? ''))
         );
         $this->row(
-            __('Slug', 'thewpfeeds'),
+            __('Slug', 'freshet-feeds'),
             sprintf(
                 '<input type="text" name="slug" class="regular-text" value="%s"><p class="description">%s</p>',
                 esc_attr($feed->slug ?? ''),
-                esc_html__('Used in code: thewpfeeds_render( \'slug\' ). Leave empty to derive from the name.', 'thewpfeeds')
+                esc_html__('Used in code: freshet_feeds_render( \'slug\' ). Leave empty to derive from the name.', 'freshet-feeds')
             )
         );
 
-        $providerSelect = '<select name="provider" id="thewpfeeds-provider">';
+        $providerSelect = '<select name="provider" id="freshet-feeds-provider">';
         foreach ($this->providers->all() as $provider) {
             if ($provider->id() === 'mock' && wp_get_environment_type() === 'production') {
                 continue;
@@ -428,7 +428,7 @@ final class FeedsPage
             );
         }
         $providerSelect .= '</select>';
-        $this->row(__('Provider', 'thewpfeeds'), $providerSelect);
+        $this->row(__('Provider', 'freshet-feeds'), $providerSelect);
 
         foreach ($this->providers->all() as $provider) {
             foreach ($provider->settingsFields() as $key => $field) {
@@ -437,14 +437,14 @@ final class FeedsPage
 
                 if (($field['type'] ?? 'text') === 'connection') {
                     $input = '<select name="' . $name . '">';
-                    $input .= '<option value="">' . esc_html__('— select —', 'thewpfeeds') . '</option>';
+                    $input .= '<option value="">' . esc_html__('— select —', 'freshet-feeds') . '</option>';
                     foreach ($this->connections->all() as $connection) {
                         $input .= sprintf(
                             '<option value="%s"%s>%s%s</option>',
                             esc_attr($connection->id),
                             selected($value, $connection->id, false),
                             esc_html($connection->label),
-                            $connection->isConnected() ? '' : esc_html__(' (not connected)', 'thewpfeeds')
+                            $connection->isConnected() ? '' : esc_html__(' (not connected)', 'freshet-feeds')
                         );
                     }
                     $input .= '</select>';
@@ -461,40 +461,40 @@ final class FeedsPage
         }
 
         $this->row(
-            __('Items', 'thewpfeeds'),
+            __('Items', 'freshet-feeds'),
             sprintf('<input type="number" name="count" min="1" max="50" value="%s">', esc_attr((string) ($feed->count ?? Feed::DEFAULT_COUNT)))
         );
         $this->row(
-            __('Cache TTL (seconds)', 'thewpfeeds'),
+            __('Cache TTL (seconds)', 'freshet-feeds'),
             sprintf('<input type="number" name="ttl" min="300" step="60" value="%s">', esc_attr((string) ($feed->ttl ?? Feed::DEFAULT_TTL)))
         );
 
         $layout = $feed->defaultLayout ?? 'grid';
         $this->row(
-            __('Default layout', 'thewpfeeds'),
+            __('Default layout', 'freshet-feeds'),
             sprintf(
                 '<select name="layout"><option value="grid"%s>%s</option><option value="list"%s>%s</option></select>',
                 selected($layout, 'grid', false),
-                esc_html__('Grid', 'thewpfeeds'),
+                esc_html__('Grid', 'freshet-feeds'),
                 selected($layout, 'list', false),
-                esc_html__('List', 'thewpfeeds')
+                esc_html__('List', 'freshet-feeds')
             )
         );
 
         echo '</table>';
 
-        submit_button($isNew ? __('Create feed', 'thewpfeeds') : __('Save feed', 'thewpfeeds'));
-        printf('<a href="%s">%s</a>', esc_url($backUrl), esc_html__('Back to list', 'thewpfeeds'));
+        submit_button($isNew ? __('Create feed', 'freshet-feeds') : __('Save feed', 'freshet-feeds'));
+        printf('<a href="%s">%s</a>', esc_url($backUrl), esc_html__('Back to list', 'freshet-feeds'));
         echo '</form>';
     }
 
     private function renderConnections(): void
     {
-        echo '<h2>' . esc_html__('LinkedIn connections', 'thewpfeeds') . '</h2>';
+        echo '<h2>' . esc_html__('LinkedIn connections', 'freshet-feeds') . '</h2>';
         echo '<p class="description">';
         printf(
             /* translators: %s: OAuth redirect URI */
-            esc_html__('Create a LinkedIn developer app with Community Management API access and register this redirect URL: %s', 'thewpfeeds'),
+            esc_html__('Create a LinkedIn developer app with Community Management API access and register this redirect URL: %s', 'freshet-feeds'),
             '<code>' . esc_html(LinkedInOAuth::redirectUri()) . '</code>'
         );
         echo '</p>';
@@ -506,19 +506,19 @@ final class FeedsPage
 
             foreach ($connections as $connection) {
                 $connectUrl = wp_nonce_url(
-                    add_query_arg(['action' => 'thewpfeeds_oauth_start', 'connection' => $connection->id], admin_url('admin-post.php')),
-                    'thewpfeeds_oauth_start'
+                    add_query_arg(['action' => 'freshet_feeds_oauth_start', 'connection' => $connection->id], admin_url('admin-post.php')),
+                    'freshet_feeds_oauth_start'
                 );
                 $deleteUrl = wp_nonce_url(
-                    add_query_arg(['action' => 'thewpfeeds_delete_connection', 'connection' => $connection->id], admin_url('admin-post.php')),
-                    'thewpfeeds_delete_connection'
+                    add_query_arg(['action' => 'freshet_feeds_delete_connection', 'connection' => $connection->id], admin_url('admin-post.php')),
+                    'freshet_feeds_delete_connection'
                 );
 
                 $status = $connection->isConnected()
-                    ? '<span style="color:#00a32a;">' . esc_html__('Connected', 'thewpfeeds') . '</span>'
+                    ? '<span style="color:#00a32a;">' . esc_html__('Connected', 'freshet-feeds') . '</span>'
                     : '<span style="color:#b32d2e;">' . esc_html($connection->needsReauth
-                        ? __('Reauthorization needed', 'thewpfeeds')
-                        : __('Not connected', 'thewpfeeds')) . '</span>';
+                        ? __('Reauthorization needed', 'freshet-feeds')
+                        : __('Not connected', 'freshet-feeds')) . '</span>';
 
                 printf(
                     '<tr><td><strong>%s</strong></td><td>%s</td><td>%s</td><td><a href="%s">%s</a> | <a href="%s" onclick="return confirm(%s);">%s</a></td></tr>',
@@ -526,26 +526,26 @@ final class FeedsPage
                     esc_html($connection->clientId),
                     $status, // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
                     esc_url($connectUrl),
-                    esc_html__('Connect / reauthorize', 'thewpfeeds'),
+                    esc_html__('Connect / reauthorize', 'freshet-feeds'),
                     esc_url($deleteUrl),
-                    esc_attr(wp_json_encode(__('Delete this connection?', 'thewpfeeds'))),
-                    esc_html__('Delete', 'thewpfeeds')
+                    esc_attr(wp_json_encode(__('Delete this connection?', 'freshet-feeds'))),
+                    esc_html__('Delete', 'freshet-feeds')
                 );
             }
 
             echo '</tbody></table>';
         }
 
-        echo '<h3>' . esc_html__('Add connection', 'thewpfeeds') . '</h3>';
+        echo '<h3>' . esc_html__('Add connection', 'freshet-feeds') . '</h3>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" style="max-width:800px;">';
-        wp_nonce_field('thewpfeeds_save_connection');
-        echo '<input type="hidden" name="action" value="thewpfeeds_save_connection">';
+        wp_nonce_field('freshet_feeds_save_connection');
+        echo '<input type="hidden" name="action" value="freshet_feeds_save_connection">';
         echo '<table class="form-table" role="presentation">';
-        $this->row(__('Label', 'thewpfeeds'), '<input type="text" name="label" class="regular-text" required>');
-        $this->row(__('Client ID', 'thewpfeeds'), '<input type="text" name="client_id" class="regular-text" required>');
-        $this->row(__('Client secret', 'thewpfeeds'), '<input type="password" name="client_secret" class="regular-text" autocomplete="new-password" required>');
+        $this->row(__('Label', 'freshet-feeds'), '<input type="text" name="label" class="regular-text" required>');
+        $this->row(__('Client ID', 'freshet-feeds'), '<input type="text" name="client_id" class="regular-text" required>');
+        $this->row(__('Client secret', 'freshet-feeds'), '<input type="password" name="client_secret" class="regular-text" autocomplete="new-password" required>');
         echo '</table>';
-        submit_button(__('Add connection', 'thewpfeeds'));
+        submit_button(__('Add connection', 'freshet-feeds'));
         echo '</form>';
     }
 
@@ -561,7 +561,7 @@ final class FeedsPage
     private function authorize(string $nonceAction): void
     {
         if (!current_user_can(self::CAP)) {
-            wp_die(esc_html__('You are not allowed to manage feeds.', 'thewpfeeds'));
+            wp_die(esc_html__('You are not allowed to manage feeds.', 'freshet-feeds'));
         }
 
         check_admin_referer($nonceAction);
@@ -572,8 +572,8 @@ final class FeedsPage
         wp_safe_redirect(add_query_arg(array_filter([
             'page' => self::SLUG,
             'tab' => $tab !== '' ? $tab : null,
-            'thewpfeeds_notice' => $notice,
-            'thewpfeeds_message' => $message !== '' ? rawurlencode($message) : null,
+            'freshet_feeds_notice' => $notice,
+            'freshet_feeds_message' => $message !== '' ? rawurlencode($message) : null,
         ]), admin_url('admin.php')));
 
         exit;

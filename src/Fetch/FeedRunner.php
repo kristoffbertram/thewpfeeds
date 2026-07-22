@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Fetch;
+namespace FreshetFeeds\Fetch;
 
-use TheWPFeeds\Cache\ImageStore;
-use TheWPFeeds\Cache\ItemCache;
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Provider\ProviderRegistry;
+use FreshetFeeds\Cache\ImageStore;
+use FreshetFeeds\Cache\ItemCache;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Provider\ProviderRegistry;
 use Throwable;
 
 /**
@@ -58,7 +58,7 @@ final class FeedRunner
              * @param Feed $feed
              * @param ItemCollection $items
              */
-            do_action('thewpfeeds_feed_refreshed', $feed, $items);
+            do_action('freshet_feeds_feed_refreshed', $feed, $items);
 
             return $items;
         } catch (Throwable $e) {

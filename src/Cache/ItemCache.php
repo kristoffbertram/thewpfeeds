@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Cache;
+namespace FreshetFeeds\Cache;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemCollection;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemCollection;
 
 /**
  * Cached items live in post meta on the feed post — durable (unlike transients,
@@ -14,10 +14,10 @@ use TheWPFeeds\Item\ItemCollection;
  */
 final class ItemCache
 {
-    private const META_ITEMS = '_thewpfeeds_items';
-    private const META_FETCHED_AT = '_thewpfeeds_fetched_at';
-    private const META_LAST_ERROR = '_thewpfeeds_last_error';
-    private const META_FAIL_COUNT = '_thewpfeeds_fail_count';
+    private const META_ITEMS = '_freshet_feeds_items';
+    private const META_FETCHED_AT = '_freshet_feeds_fetched_at';
+    private const META_LAST_ERROR = '_freshet_feeds_last_error';
+    private const META_FAIL_COUNT = '_freshet_feeds_fail_count';
 
     public function get(Feed $feed): ?ItemCollection
     {

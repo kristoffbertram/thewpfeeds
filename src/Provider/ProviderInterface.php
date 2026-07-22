@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider;
+namespace FreshetFeeds\Provider;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemCollection;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemCollection;
 
 /**
  * A feed source. Implementations fetch remote data and return normalized Items —

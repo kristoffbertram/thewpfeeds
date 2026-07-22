@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\LinkedIn;
+namespace FreshetFeeds\Provider\LinkedIn;
 
-use TheWPFeeds\Connection\ConnectionRepository;
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Provider\ProviderInterface;
+use FreshetFeeds\Connection\ConnectionRepository;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Provider\ProviderInterface;
 
 /**
  * LinkedIn company-page posts: client fetch → image URN resolution → normalization.
@@ -29,7 +29,7 @@ final class LinkedInProvider implements ProviderInterface
 
     public function label(): string
     {
-        return __('LinkedIn (company page)', 'thewpfeeds');
+        return __('LinkedIn (company page)', 'freshet-feeds');
     }
 
     public function fetch(Feed $feed): ItemCollection
@@ -72,25 +72,25 @@ final class LinkedInProvider implements ProviderInterface
     {
         return [
             'connection_id' => [
-                'label' => __('LinkedIn connection', 'thewpfeeds'),
+                'label' => __('LinkedIn connection', 'freshet-feeds'),
                 'type' => 'connection',
                 'required' => true,
             ],
             'organization_id' => [
-                'label' => __('Organization ID', 'thewpfeeds'),
+                'label' => __('Organization ID', 'freshet-feeds'),
                 'type' => 'text',
-                'help' => __('The numeric ID of your company page (from its admin URL), e.g. 2414183.', 'thewpfeeds'),
+                'help' => __('The numeric ID of your company page (from its admin URL), e.g. 2414183.', 'freshet-feeds'),
                 'required' => true,
             ],
             'organization_name' => [
-                'label' => __('Organization name', 'thewpfeeds'),
+                'label' => __('Organization name', 'freshet-feeds'),
                 'type' => 'text',
-                'help' => __('Shown as the item author in templates.', 'thewpfeeds'),
+                'help' => __('Shown as the item author in templates.', 'freshet-feeds'),
             ],
             'organization_slug' => [
-                'label' => __('Organization slug', 'thewpfeeds'),
+                'label' => __('Organization slug', 'freshet-feeds'),
                 'type' => 'text',
-                'help' => __('The company page slug, e.g. "acme-corp" for linkedin.com/company/acme-corp.', 'thewpfeeds'),
+                'help' => __('The company page slug, e.g. "acme-corp" for linkedin.com/company/acme-corp.', 'freshet-feeds'),
             ],
         ];
     }
@@ -105,7 +105,7 @@ final class LinkedInProvider implements ProviderInterface
          *
          * @param bool $enabled Default false.
          */
-        if (apply_filters('thewpfeeds_enable_proxy', false)) {
+        if (apply_filters('freshet_feeds_enable_proxy', false)) {
             return new ProxyLinkedInClient();
         }
 

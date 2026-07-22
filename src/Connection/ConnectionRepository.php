@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Connection;
+namespace FreshetFeeds\Connection;
 
 /**
  * Connections (non-secret data) in one option; secrets delegated to TokenStore.
  */
 final class ConnectionRepository
 {
-    private const OPTION = 'thewpfeeds_connections';
+    private const OPTION = 'freshet_feeds_connections';
 
     public function __construct(private readonly TokenStore $tokens)
     {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
-use TheWPFeeds\Provider\Bluesky\BlueskyNormalizer;
+use FreshetFeeds\Provider\Bluesky\BlueskyNormalizer;
 
 final class BlueskyNormalizerTest extends TestCase
 {
@@ -17,7 +17,7 @@ final class BlueskyNormalizerTest extends TestCase
         parent::setUp();
         $this->normalizer = new BlueskyNormalizer();
         $this->fixture = json_decode(
-            (string) file_get_contents(THEWPFEEDS_FIXTURES_DIR . '/bluesky-feed.json'),
+            (string) file_get_contents(FRESHET_FEEDS_FIXTURES_DIR . '/bluesky-feed.json'),
             true
         );
     }

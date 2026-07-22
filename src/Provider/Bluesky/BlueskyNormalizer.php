@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\Bluesky;
+namespace FreshetFeeds\Provider\Bluesky;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use TheWPFeeds\Item\Item;
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Item\ItemImage;
+use FreshetFeeds\Item\Item;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Item\ItemImage;
 
 /**
  * app.bsky.feed.getAuthorFeed response → normalized Items. Pure.

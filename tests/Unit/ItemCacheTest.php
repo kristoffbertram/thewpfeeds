@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Tests\Unit;
+namespace FreshetFeeds\Tests\Unit;
 
 use Brain\Monkey\Functions;
 use DateTimeImmutable;
 use DateTimeZone;
-use TheWPFeeds\Cache\ItemCache;
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\Item;
-use TheWPFeeds\Item\ItemCollection;
+use FreshetFeeds\Cache\ItemCache;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\Item;
+use FreshetFeeds\Item\ItemCollection;
 
 final class ItemCacheTest extends TestCase
 {
@@ -111,12 +111,12 @@ final class ItemCacheTest extends TestCase
         $this->assertFalse($cache->isDue($feed), 'Fresh feed is not due');
 
         // Fetched 2h ago with 2 failures: backoff = ttl * 4 = 4h → not due.
-        $this->meta[1]['_thewpfeeds_fetched_at'] = time() - 2 * 3600;
-        $this->meta[1]['_thewpfeeds_fail_count'] = 2;
+        $this->meta[1]['_freshet_feeds_fetched_at'] = time() - 2 * 3600;
+        $this->meta[1]['_freshet_feeds_fail_count'] = 2;
         $this->assertFalse($cache->isDue($feed));
 
         // Fetched 5h ago with 2 failures → due again.
-        $this->meta[1]['_thewpfeeds_fetched_at'] = time() - 5 * 3600;
+        $this->meta[1]['_freshet_feeds_fetched_at'] = time() - 5 * 3600;
         $this->assertTrue($cache->isDue($feed));
     }
 }

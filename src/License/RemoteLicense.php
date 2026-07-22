@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\License;
+namespace FreshetFeeds\License;
 
 /**
  * License backed by the remote license server. Behaves exactly like the free
@@ -13,8 +13,8 @@ namespace TheWPFeeds\License;
  */
 final class RemoteLicense implements LicenseInterface
 {
-    public const OPTION_KEY = 'thewpfeeds_license_key';
-    private const CACHE_KEY = 'thewpfeeds_license_status';
+    public const OPTION_KEY = 'freshet_feeds_license_key';
+    private const CACHE_KEY = 'freshet_feeds_license_status';
     private const CACHE_TTL = 12 * HOUR_IN_SECONDS;
 
     private ?bool $valid = null;
@@ -51,7 +51,7 @@ final class RemoteLicense implements LicenseInterface
 
     /** How long an unreachable license server keeps a site on Pro (grace, not forever). */
     private const FAIL_OPEN_GRACE = 7 * DAY_IN_SECONDS;
-    private const LAST_OK_OPTION = 'thewpfeeds_license_last_ok';
+    private const LAST_OK_OPTION = 'freshet_feeds_license_last_ok';
 
     private function resolve(): bool
     {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Connection;
+namespace FreshetFeeds\Connection;
 
 /**
  * Secret storage (client secret, access/refresh tokens) per connection,
@@ -12,7 +12,7 @@ namespace TheWPFeeds\Connection;
  */
 final class TokenStore
 {
-    private const OPTION_PREFIX = 'thewpfeeds_tokens_';
+    private const OPTION_PREFIX = 'freshet_feeds_tokens_';
 
     /**
      * @param array{client_secret?: string, access_token?: string, refresh_token?: string} $secrets

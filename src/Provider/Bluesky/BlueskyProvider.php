@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\Bluesky;
+namespace FreshetFeeds\Provider\Bluesky;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Item\ItemCollection;
-use TheWPFeeds\Provider\FetchException;
-use TheWPFeeds\Provider\ProviderInterface;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\Provider\FetchException;
+use FreshetFeeds\Provider\ProviderInterface;
 
 /**
  * Bluesky profile posts via the public AppView API — no auth, no app, no key.
@@ -27,7 +27,7 @@ final class BlueskyProvider implements ProviderInterface
 
     public function label(): string
     {
-        return __('Bluesky (profile)', 'thewpfeeds');
+        return __('Bluesky (profile)', 'freshet-feeds');
     }
 
     public function fetch(Feed $feed): ItemCollection
@@ -35,7 +35,7 @@ final class BlueskyProvider implements ProviderInterface
         $handle = ltrim(trim((string) $feed->setting('handle', '')), '@');
 
         if ($handle === '') {
-            throw new FetchException(esc_html__('Bluesky handle is missing.', 'thewpfeeds'));
+            throw new FetchException(esc_html__('Bluesky handle is missing.', 'freshet-feeds'));
         }
 
         $url = add_query_arg([
@@ -68,9 +68,9 @@ final class BlueskyProvider implements ProviderInterface
     {
         return [
             'handle' => [
-                'label' => __('Handle', 'thewpfeeds'),
+                'label' => __('Handle', 'freshet-feeds'),
                 'type' => 'text',
-                'help' => __('The profile handle, e.g. name.bsky.social or a custom domain handle.', 'thewpfeeds'),
+                'help' => __('The profile handle, e.g. name.bsky.social or a custom domain handle.', 'freshet-feeds'),
                 'required' => true,
             ],
         ];

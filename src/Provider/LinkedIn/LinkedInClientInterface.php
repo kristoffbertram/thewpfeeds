@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\LinkedIn;
+namespace FreshetFeeds\Provider\LinkedIn;
 
-use TheWPFeeds\Feed\Feed;
+use FreshetFeeds\Feed\Feed;
 
 /**
  * The hybrid-connection seam: the same LinkedInProvider works whether posts
@@ -17,7 +17,7 @@ interface LinkedInClientInterface
      * Raw /rest/posts elements for an organization.
      *
      * @return list<array<string, mixed>>
-     * @throws \TheWPFeeds\Provider\FetchException
+     * @throws \FreshetFeeds\Provider\FetchException
      */
     public function getOrganizationPosts(Feed $feed, string $orgUrn, int $count): array;
 
@@ -26,7 +26,7 @@ interface LinkedInClientInterface
      *
      * @param list<string> $imageUrns
      * @return array<string, array{url: string, width?: int, height?: int, alt?: string}>
-     * @throws \TheWPFeeds\Provider\FetchException
+     * @throws \FreshetFeeds\Provider\FetchException
      */
     public function resolveImages(Feed $feed, array $imageUrns): array;
 }

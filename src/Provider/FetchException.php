@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider;
+namespace FreshetFeeds\Provider;
 
 use RuntimeException;
 

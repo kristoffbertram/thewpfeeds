@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Rest;
+namespace FreshetFeeds\Rest;
 
-use TheWPFeeds\Feed\Feed;
-use TheWPFeeds\Feed\FeedRepository;
+use FreshetFeeds\Feed\Feed;
+use FreshetFeeds\Feed\FeedRepository;
 use WP_REST_Response;
 
 /**
@@ -20,7 +20,7 @@ final class FeedsController
 
     public function registerRoutes(): void
     {
-        register_rest_route('thewpfeeds/v1', '/feeds', [
+        register_rest_route('freshet-feeds/v1', '/feeds', [
             'methods' => 'GET',
             'callback' => [$this, 'list'],
             'permission_callback' => static fn (): bool => current_user_can('edit_posts'),

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\LinkedIn;
+namespace FreshetFeeds\Provider\LinkedIn;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use TheWPFeeds\Item\Item;
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Item\ItemImage;
+use FreshetFeeds\Item\Item;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Item\ItemImage;
 
 /**
  * Raw LinkedIn /rest/posts element → normalized Item. Pure — no WP, no network —

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Provider\Rss;
+namespace FreshetFeeds\Provider\Rss;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use TheWPFeeds\Item\Item;
-use TheWPFeeds\Item\ItemAuthor;
-use TheWPFeeds\Item\ItemImage;
+use FreshetFeeds\Item\Item;
+use FreshetFeeds\Item\ItemAuthor;
+use FreshetFeeds\Item\ItemImage;
 
 /**
  * RSS 2.0 / Atom → normalized Items. Pure (no WP, no network) so it's fully

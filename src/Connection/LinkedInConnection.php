@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheWPFeeds\Connection;
+namespace FreshetFeeds\Connection;
 
 /**
  * A configured LinkedIn connection. Client secret and tokens are NOT here —
