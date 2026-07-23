@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace FreshetFeeds\License;
 
 /**
- * License backed by the remote license server. Behaves exactly like the free
- * tier until a key validates. Validation results are cached in a transient
- * (12h); a lapsed cache re-validates lazily and FAILS OPEN for one interval
- * on network errors — a hiccup at the license server must never downgrade a
- * paying customer's site.
+ * License backed by the remote license server. Feeds are unlimited regardless;
+ * what a validating key buys is the managed LinkedIn pipeline (canUseProxy).
+ * Validation results are cached in a transient (12h); a lapsed cache
+ * re-validates lazily and FAILS OPEN for one interval on network errors — a
+ * hiccup at the license server must never downgrade a paying customer's site.
  */
 final class RemoteLicense implements LicenseInterface
 {
@@ -28,14 +28,9 @@ final class RemoteLicense implements LicenseInterface
         return $this->valid ??= $this->resolve();
     }
 
-    public function maxFeeds(): int
+    public function canUseProxy(): bool
     {
-        return $this->isPro() ? -1 : 1;
-    }
-
-    public function canCreateFeed(int $existingCount): bool
-    {
-        return $this->maxFeeds() === -1 || $existingCount < $this->maxFeeds();
+        return $this->isPro();
     }
 
     public static function storedKey(): string

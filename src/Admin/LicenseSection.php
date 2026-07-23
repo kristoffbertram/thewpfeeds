@@ -89,8 +89,8 @@ final class LicenseSection
                 esc_html(substr($key, 0, 6)),
                 esc_html(substr($key, -4)),
                 $isPro
-                    ? '<strong style="color:#00a32a;">' . esc_html__('Pro active — unlimited feeds', 'freshet-feeds') . '</strong>'
-                    : '<strong style="color:#b32d2e;">' . esc_html__('Invalid or expired — free tier (1 feed)', 'freshet-feeds') . '</strong>'
+                    ? '<strong style="color:#00a32a;">' . esc_html__('Pro active — managed LinkedIn connection enabled', 'freshet-feeds') . '</strong>'
+                    : '<strong style="color:#b32d2e;">' . esc_html__('Invalid or expired — managed LinkedIn connection disabled', 'freshet-feeds') . '</strong>'
             );
 
             $deactivateUrl = wp_nonce_url(
@@ -112,7 +112,7 @@ final class LicenseSection
         echo '<p class="description">';
         printf(
             /* translators: %s: linked store URL */
-            esc_html__('The free version supports 1 feed. Get unlimited feeds with %s.', 'freshet-feeds'),
+            esc_html__('Feeds are free and unlimited. %s adds the managed LinkedIn connection — no LinkedIn developer app required.', 'freshet-feeds'),
             '<a href="https://freshet.studio" target="_blank" rel="noopener noreferrer">Freshet Feeds Pro</a>'
         );
         echo '</p>';

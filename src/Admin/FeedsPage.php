@@ -279,9 +279,9 @@ final class FeedsPage
             <div class="frst-header__row">
                 <svg class="frst-header__mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
                     <rect width="32" height="32" rx="7" fill="#1122ff"/>
-                    <circle cx="10" cy="22" r="3" fill="#fff"/>
-                    <path d="M7 13a12 12 0 0 1 12 12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-                    <path d="M7 6a19 19 0 0 1 19 19" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+                    <circle cx="9.5" cy="22.5" r="2.75" fill="#fff"/>
+                    <path d="M9.5 14.75a7.75 7.75 0 0 1 7.75 7.75" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M9.5 8a14.5 14.5 0 0 1 14.5 14.5" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
                 </svg>
                 <h1 class="frst-header__title"><?php esc_html_e('Freshet Feeds', 'freshet-feeds'); ?></h1>
                 <span class="frst-header__version"><?php echo esc_html('v' . FRESHET_FEEDS_VERSION); ?></span>
@@ -290,12 +290,12 @@ final class FeedsPage
                         <?php if ($this->license->isPro()) : ?>
                             <span class="frst-header__pill frst-header__pill--pro"><?php esc_html_e('Pro', 'freshet-feeds'); ?></span>
                         <?php else : ?>
-                            <span class="frst-header__pill frst-header__pill--free"><?php esc_html_e('Free · 1 feed', 'freshet-feeds'); ?></span>
+                            <span class="frst-header__pill frst-header__pill--free"><?php esc_html_e('Free', 'freshet-feeds'); ?></span>
                             <a href="https://freshet.studio" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Upgrade', 'freshet-feeds'); ?></a>
                         <?php endif; ?>
                     <?php endif; ?>
                     <a href="https://freshet.studio/docs" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Docs', 'freshet-feeds'); ?></a>
-                    <a href="mailto:plugins@kristoffbertram.be"><?php esc_html_e('Support', 'freshet-feeds'); ?></a>
+                    <a href="mailto:email@freshet.studio"><?php esc_html_e('Support', 'freshet-feeds'); ?></a>
                 </div>
             </div>
             <nav class="nav-tab-wrapper">
@@ -307,26 +307,20 @@ final class FeedsPage
                 <?php endforeach; ?>
             </nav>
         </div>
+        <?php // Anchor for common.js: notices are moved after .wp-header-end, below the brand strip. ?>
+        <hr class="wp-header-end">
         <?php
     }
 
     private function renderFeedList(): void
     {
         $feeds = $this->feeds->all();
-        $canAdd = $this->license->canCreateFeed($this->feeds->countBillable());
 
-        if ($canAdd || $this->licenseSection === null) {
-            printf(
-                '<a href="%s" class="page-title-action">%s</a>',
-                esc_url(add_query_arg(['page' => self::SLUG, 'add' => 1], admin_url('admin.php'))),
-                esc_html__('Add feed', 'freshet-feeds')
-            );
-        } else {
-            printf(
-                '<p><strong>%s</strong></p>',
-                esc_html__('Free version: 1 feed. Upgrade to Pro for unlimited feeds.', 'freshet-feeds')
-            );
-        }
+        printf(
+            '<a href="%s" class="page-title-action">%s</a>',
+            esc_url(add_query_arg(['page' => self::SLUG, 'add' => 1], admin_url('admin.php'))),
+            esc_html__('Add feed', 'freshet-feeds')
+        );
 
         echo '<table class="widefat striped" style="margin-top:1em;"><thead><tr>';
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FreshetFeeds\Feed;
 
 use RuntimeException;
-use FreshetFeeds\License\LicenseInterface;
 use WP_Post;
 
 /**
@@ -16,10 +15,6 @@ final class FeedRepository
 {
     public const POST_TYPE = 'freshet_feeds_feed';
     private const META_CONFIG = '_freshet_feeds_config';
-
-    public function __construct(private readonly LicenseInterface $license)
-    {
-    }
 
     public static function registerPostType(): void
     {
@@ -69,18 +64,9 @@ final class FeedRepository
         return array_map(fn (WP_Post $post): Feed => $this->hydrate($post), $posts);
     }
 
-    /**
-     * Persist a feed. New feeds (id = 0) are gated by the license.
-     *
-     * @throws RuntimeException When the free-tier feed limit is reached.
-     */
     public function save(Feed $feed): Feed
     {
         $isNew = $feed->id === 0;
-
-        if ($isNew && !$this->license->canCreateFeed($this->countBillable())) {
-            throw new RuntimeException(esc_html__('Feed limit reached. Upgrade to Freshet Feeds Pro for unlimited feeds.', 'freshet-feeds'));
-        }
 
         $postData = [
             'post_type' => self::POST_TYPE,
@@ -128,21 +114,6 @@ final class FeedRepository
         }
 
         return wp_delete_post($id, true) !== false;
-    }
-
-    /**
-     * Feeds counting toward the license limit. Mock feeds are free outside
-     * production so templates can be developed without burning the free slot.
-     */
-    public function countBillable(): int
-    {
-        $feeds = $this->all();
-
-        if (wp_get_environment_type() !== 'production') {
-            $feeds = array_filter($feeds, static fn (Feed $feed): bool => $feed->providerId !== 'mock');
-        }
-
-        return count($feeds);
     }
 
     private function hydrate(WP_Post $post): Feed

@@ -59,9 +59,10 @@ final class Plugin
     private function __construct()
     {
         // The wordpress.org build ships without the remote-license stack
-        // (Guideline 5: no locked features) — everything is unlimited there.
-        // Direct-sold builds keep it: RemoteLicense behaves as the free tier
-        // (1 feed) until a key validates against the license server.
+        // (Guideline 5: no locked features) — feeds are unlimited in BOTH
+        // builds. What a validating key buys (direct-sold builds only) is the
+        // managed LinkedIn pipeline: canUseProxy() routes fetches through the
+        // vendor proxy so customers skip the LinkedIn developer-app dance.
         $hasLicenseStack = is_readable(FRESHET_FEEDS_DIR . 'src/License/RemoteLicense.php');
         $licenseClient = $hasLicenseStack ? new LicenseClient() : null;
 
@@ -75,7 +76,7 @@ final class Plugin
             $hasLicenseStack ? new RemoteLicense($licenseClient) : new \FreshetFeeds\License\UnlimitedLicense()
         );
 
-        $this->feeds = new FeedRepository($this->license);
+        $this->feeds = new FeedRepository();
         $this->cache = new ItemCache();
         $this->providers = new ProviderRegistry();
         $this->connections = new ConnectionRepository(new TokenStore());
@@ -123,6 +124,7 @@ final class Plugin
             new ByoLinkedInClient($this->connections),
             $normalizer,
             $this->connections,
+            $this->license,
         ));
 
         $this->providers->register(new \FreshetFeeds\Provider\Rss\RssProvider($rssNormalizer));

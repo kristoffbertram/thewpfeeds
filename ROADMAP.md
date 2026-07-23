@@ -23,7 +23,7 @@
 
 ## v2
 
-- Vendor proxy service (api.freshet-feeds.com) — the `ProxyLinkedInClient` stub and
+- Vendor proxy service (api.freshet.studio) — the `ProxyLinkedInClient` stub and
   `freshet_feeds_enable_proxy` filter already define the seam; customers connect
   without creating a LinkedIn app
 - ~~Provider #2/#3: RSS~~ Shipped: RSS/Atom, YouTube (keyless channel Atom), Bluesky (public API)

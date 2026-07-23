@@ -58,17 +58,15 @@ final class RemoteLicenseTest extends TestCase
         Functions\when('wp_remote_retrieve_body')->justReturn(json_encode($envelope));
     }
 
-    public function testNoKeyMeansFreeTier(): void
+    public function testNoKeyMeansNoProxyEntitlement(): void
     {
         $license = $this->license();
 
         $this->assertFalse($license->isPro());
-        $this->assertSame(1, $license->maxFeeds());
-        $this->assertTrue($license->canCreateFeed(0));
-        $this->assertFalse($license->canCreateFeed(1));
+        $this->assertFalse($license->canUseProxy());
     }
 
-    public function testValidKeyUnlocksUnlimitedFeeds(): void
+    public function testValidKeyEnablesTheManagedPipeline(): void
     {
         $this->options[RemoteLicense::OPTION_KEY] = str_repeat('a', 32);
         $this->serverResponds(['success' => true, 'data' => ['valid' => true, 'status' => 'active']]);
@@ -76,8 +74,7 @@ final class RemoteLicenseTest extends TestCase
         $license = $this->license();
 
         $this->assertTrue($license->isPro());
-        $this->assertSame(-1, $license->maxFeeds());
-        $this->assertTrue($license->canCreateFeed(500));
+        $this->assertTrue($license->canUseProxy());
     }
 
     public function testInvalidKeyStaysFree(): void

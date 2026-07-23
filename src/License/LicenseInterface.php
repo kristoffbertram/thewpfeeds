@@ -8,8 +8,11 @@ interface LicenseInterface
 {
     public function isPro(): bool;
 
-    /** Maximum number of feeds; -1 means unlimited. */
-    public function maxFeeds(): int;
-
-    public function canCreateFeed(int $existingCount): bool;
+    /**
+     * Whether this site may route LinkedIn fetches through the vendor proxy —
+     * the managed pipeline that spares customers a LinkedIn developer app.
+     * Distinct from isPro(): the wordpress.org build is "pro" (nothing
+     * locked) yet never proxy-entitled.
+     */
+    public function canUseProxy(): bool;
 }

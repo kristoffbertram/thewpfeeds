@@ -40,6 +40,7 @@ rsync -a \
   --exclude='webpack.config.js' \
   --exclude='CLAUDE.md' \
   --exclude='ROADMAP.md' \
+  --exclude='TODO.md' \
   --exclude='README.md' \
   --exclude='.phpunit.cache' \
   --exclude='.vscode' \
@@ -56,7 +57,7 @@ rsync -a \
 rm "$STAGE/src/License/UpdateChecker.php" \
    "$STAGE/src/License/RemoteLicense.php" \
    "$STAGE/src/License/LicenseClient.php" \
-   "$STAGE/src/License/FreeLicense.php" \
+   "$STAGE/src/Provider/LinkedIn/ProxyLinkedInClient.php" \
    "$STAGE/src/Admin/LicenseSection.php"
 (cd "$STAGE" && composer dump-autoload --no-dev --optimize --quiet)
 WPORG_ZIP="dist/freshet-feeds-${VERSION}-wporg.zip"

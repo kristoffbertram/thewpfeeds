@@ -8,6 +8,7 @@ use FreshetFeeds\Connection\ConnectionRepository;
 use FreshetFeeds\Feed\Feed;
 use FreshetFeeds\Item\ItemAuthor;
 use FreshetFeeds\Item\ItemCollection;
+use FreshetFeeds\License\LicenseInterface;
 use FreshetFeeds\Provider\ProviderInterface;
 
 /**
@@ -19,6 +20,7 @@ final class LinkedInProvider implements ProviderInterface
         private readonly LinkedInClientInterface $client,
         private readonly PostNormalizer $normalizer,
         private readonly ConnectionRepository $connections,
+        private readonly LicenseInterface $license,
     ) {
     }
 
@@ -96,16 +98,23 @@ final class LinkedInProvider implements ProviderInterface
     }
 
     /**
-     * Proxy mode is opt-in via filter until the vendor service exists.
+     * The managed pipeline (vendor proxy) is on when the license entitles it;
+     * the filter remains a manual override in either direction. The class
+     * check mirrors Plugin.php's license-stack file checks: the proxy client
+     * is stripped from the wordpress.org build (see bin/build-release.sh),
+     * where this must fall back to the BYO client instead of fataling.
      */
     private function client(): LinkedInClientInterface
     {
         /**
-         * Enable the (future) vendor proxy client.
+         * Enable the vendor proxy client.
          *
-         * @param bool $enabled Default false.
+         * @param bool $enabled Default: the license's proxy entitlement.
          */
-        if (apply_filters('freshet_feeds_enable_proxy', false)) {
+        if (
+            class_exists(ProxyLinkedInClient::class)
+            && apply_filters('freshet_feeds_enable_proxy', $this->license->canUseProxy())
+        ) {
             return new ProxyLinkedInClient();
         }
 
